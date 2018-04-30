@@ -14,66 +14,145 @@
 // You should have received a copy of the GNU General Public License
 // along with Soda. If not, see <http://www.gnu.org/licenses/>.
 
-
-
-export default class Node {
-
-  constructor(data) {
-    this.parent = null;
-    this.title = '';
-    this.children = [];
-  };
+export class BasicConfigurationNode extends window.Model {
+  constructor() {
+    super();
+    this.add_attr({
+      title: "",
+      children: []
+    });
+  }
 
   addChild(child) {
-    child.setParent(this);
     this.children.push(child);
     return child;
   }
 
   addChildren(children) {
-    children.forEach(child => {
-      child.setParent(this);
-      this.children.push(child);
-    });
+    for (let i = 0; i < children.length; i++) {
+      this.children.push(children[i]);
+    }
   }
 
   getChildren() {
-    return this.children;
+    return this.children.get();
   }
 
   getTitle() {
-    return this.title;
+    return this.title.get();
   }
 
   setTitle(title) {
-    this.title = title;
-  }
-
-  setParent(parent) {
-    this.parent = parent;
-  }
-
-  getParent() {
-    return this.parent
-  }
-
-  isRoot() {
-    return (this.parent === null);
-  }
-
-  isLeaf() {
-    if (this.children.size() == 0)
-      return true;
-    else
-      return false;
-  }
-
-  removeParent() {
-    this.parent = null;
+    this.title.set(title);
   }
 
   removeChildren() {
-    this.parent = null;
+    this.children.set(null);
   }
 
+  isLeaf() {
+    if (this.children.length == 0) return true;
+    else return false;
+  }
+
+  isRoot() {
+    if (this.parent) return false;
+    else return true;
+  }
 }
+
+export class ConfigurationNode extends BasicConfigurationNode {
+  constructor(newParent) {
+    super();
+    this.add_attr({
+      parent: newParent
+    });
+  }
+
+  setParent(parent) {
+    // this.mod_attr("parent", parent);
+    this.parent.set(parent);
+  }
+
+  getParent() {
+    return this.parent.get();
+  }
+
+  removeParent() {
+    this.parent.set(null);
+  }
+
+  remove() {
+    this.parent.children.remove(this);
+    delete FileSystem._objects[this._server_id];
+  }
+}
+
+export class ConfigurationRoot extends BasicConfigurationNode {
+  constructor() {
+    super();
+  }
+}
+
+// export default class Zone extends Node {
+
+//   constructor(data) {
+//     super();
+//     this.parent = null;
+//     this.title = '';
+//     this.children = [];
+//   };
+
+//   addChild(child) {
+//     child.setParent(this);
+//     this.children.push(child);
+//     return child;
+//   }
+
+//   addChildren(children) {
+//     children.forEach(child => {
+//       child.setParent(this);
+//       this.children.push(child);
+//     });
+//   }
+
+//   getChildren() {
+//     return this.children;
+//   }
+
+//   getTitle() {
+//     return this.title;
+//   }
+
+//   setTitle(title) {
+//     this.title = title;
+//   }
+
+//   setParent(parent) {
+//     this.parent = parent;
+//   }
+
+//   getParent() {
+//     return this.parent
+//   }
+
+//   isRoot() {
+//     return (this.parent === null);
+//   }
+
+//   isLeaf() {
+//     if (this.children.size() == 0)
+//       return true;
+//     else
+//       return false;
+//   }
+
+//   removeParent() {
+//     this.parent = null;
+//   }
+
+//   removeChildren() {
+//     this.parent = null;
+//   }
+
+// }
