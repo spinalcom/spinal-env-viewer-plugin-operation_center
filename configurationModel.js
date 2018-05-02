@@ -94,6 +94,22 @@ export class ConfigurationRoot extends BasicConfigurationNode {
   }
 }
 
+export class Forest extends window.Model {
+  constructor() {
+    super();
+    this.add_attr({
+      list: new Lst(),
+      id: 0
+    });
+  }
+
+  addTree(title) {
+    var tree = new ConfigurationRoot();
+    tree.setTitle(title);
+    this.list.push(tree);
+  }
+}
+
 // export default class Zone extends Node {
 
 //   constructor(data) {

@@ -1,36 +1,46 @@
 
 <template>
   <div class="tree">
+    <md-button>
+      <div class="block">
 
-    <div>
+        <md-button class="md-icon-button"
+                   @click="toggleShow()">
+          <md-icon>{{hideShowIcon}}
+          </md-icon>
+          <md-tooltip md-direction="top">hide-show</md-tooltip>
+        </md-button>
 
-      <md-button class="md-primary"
-                 disabled>
-        <small>{{parent.title.get()}}</small>
-      </md-button>
+        <md-button class="md-primary"
+                   disabled>
+          <small>{{parent.title.get()}}</small>
+        </md-button>
 
-      <md-button class="md-icon-button"
-                 @click="onAddChild( parent)">
-        <md-icon>add</md-icon>
-        <md-tooltip md-direction="top">New Zone</md-tooltip>
-      </md-button>
+        <md-button class="md-icon-button"
+                   @click="onAddChild( parent)">
+          <md-icon>add</md-icon>
+          <md-tooltip md-direction="top">New Zone</md-tooltip>
+        </md-button>
 
-      <md-button class="md-icon-button"
-                 @click="onRemove( parent)">
-        <md-icon>clear</md-icon>
-      </md-button>
+        <md-button class="md-icon-button"
+                   @click="onRemove( parent)">
+          <md-icon>clear</md-icon>
+        </md-button>
 
-    </div>
+      </div>
+    </md-button>
 
-    <md-list v-if="arrayTree.length>0">
-      <md-list-item class="adjust"
-                    v-for="child in arrayTree"
-                    :key="child.title">
-        <tree :parent="child"></tree>
-      </md-list-item>
-    </md-list>
+    <div v-show="show">
 
-    <!-- <md-list class=" adjust">
+      <md-list v-if="arrayTree.length>0">
+        <md-list-item class="adjust"
+                      v-for="child in arrayTree"
+                      :key="child.title">
+          <tree :parent="child"></tree>
+        </md-list-item>
+      </md-list>
+
+      <!-- <md-list class=" adjust">
       <md-list-item v-for="index in parent.children.length"
                     :key="parent.children[index-1].title.get()">
         <div class="adjust">
@@ -38,6 +48,8 @@
         </div>
       </md-list-item>
     </md-list> -->
+    </div>
+
   </div>
 </template>
 
@@ -50,7 +62,9 @@ export default {
   data() {
     return {
       id: 1,
-      arrayTree: []
+      arrayTree: [],
+      show: false,
+      hideShowIcon: "keyboard_arrow_right"
       // title: ""
     };
   },
@@ -75,6 +89,7 @@ export default {
     onAddChild: function(parent) {
       var parentTitle = parent.title.get();
       this.addChild(parent, parentTitle + "-" + this.incrementId().toString());
+      this.setShow();
     },
     addChild: function(parent, title) {
       var child = new Node(parent);
@@ -93,6 +108,19 @@ export default {
     },
     refresh: function() {
       this.getArray();
+    },
+    toggleShow: function() {
+      if (this.show) {
+        this.show = false;
+        this.hideShowIcon = "keyboard_arrow_right";
+      } else {
+        this.show = true;
+        this.hideShowIcon = "keyboard_arrow_down";
+      }
+    },
+    setShow: function() {
+      this.show = true;
+      this.hideShowIcon = "keyboard_arrow_down";
     }
   },
   mounted() {
@@ -126,4 +154,8 @@ export default {
   vertical-align: top;
   border: 1px green;
 } */
+
+.block {
+  display: inline;
+}
 </style>

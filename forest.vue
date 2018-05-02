@@ -53,10 +53,13 @@
     <div class='mainMenu'>
       <!-- v-if="forest.length>0" -->
       <md-list class="scroll">
+
         <md-list-item class="adjust"
                       v-for="t in arrayForest"
                       :key="t.title">
+
           <tree :parent="t"></tree>
+
         </md-list-item>
 
       </md-list>
@@ -92,7 +95,8 @@ import tree from "./tree.vue";
 import EventBus from "./EventBus.vue";
 import {
   ConfigurationNode as Node,
-  ConfigurationRoot as Root
+  ConfigurationRoot as Root,
+  forest
 } from "./configurationModel";
 export default {
   name: "forest",
@@ -100,7 +104,6 @@ export default {
     return {
       showDialog: false,
       forest: {},
-      id: 1,
       title: "Zone",
       arrayForest: [],
       spinalSystem: window.spinalSystem
@@ -112,23 +115,23 @@ export default {
   },
   methods: {
     incrementId: function() {
-      // return this.forest.length + 1;
-      return this.id++;
+      this.forest.id.set(this.forest.id.get() + 1);
+      return this.forest.id.get();
     },
     getArray: function() {
       this.arrayForest = [];
-      for (let i = 0; i < this.forest.length; i++) {
-        this.arrayForest.push(this.forest[i]);
+      for (let i = 0; i < this.forest.list.length; i++) {
+        this.arrayForest.push(this.forest.list[i]);
       }
     },
     onCreateTree: function() {
-      this.addTree(this.title + " " + this.incrementId().toString());
+      this.forest.addTree(this.title + " " + this.incrementId().toString());
     },
-    addTree: function(title) {
-      var tree = new Root();
-      tree.setTitle(title);
-      this.forest.push(tree);
-    },
+    // addTree: function(title) {
+    //   var tree = new Root();
+    //   tree.setTitle(title);
+    //   this.forest.list.push(tree);
+    // },
     linkToDB: function() {
       this.spinalSystem.getModel().then(forgefile => {
         // console.log("spinal model dictionary");
@@ -140,7 +143,7 @@ export default {
               this.forest.bind(this.onModelChange);
             });
           } else {
-            this.forest = new Lst();
+            this.forest = new Forest();
             forgefile.add_attr({
               configurationModel: new Ptr(this.forest)
             });
@@ -151,7 +154,7 @@ export default {
     },
     updateVueArray: function() {
       this.forest.vueArray = [];
-      let forestLength = this.forest.length;
+      let forestLength = this.forest.list.length;
       // let vueArrayLength = this.forest.vueArray.length;
       // if (forestLength > vueArrayLength) {
       //   for (let i = vueArrayLength - 1; i < forestLength - 1; i++) {
@@ -159,7 +162,7 @@ export default {
       //   }
       // }
       for (let i = 0; i < forestLength; i++) {
-        this.forest.vueArray[i] = this.forest[i];
+        this.forest.vueArray[i] = this.forest.list[i];
       }
     },
     onModelChange: function() {
@@ -167,10 +170,10 @@ export default {
       // this.updateVueArray();
     },
     onPrintForest: function() {
-      console.log(this.forest);
+      console.log(this.forest.list);
     },
     removeRoot: function(root) {
-      this.forest.remove(root);
+      this.forest.list.remove(root);
       delete FileSystem._objects[root._server_id];
     },
     getEvents: function() {
@@ -209,7 +212,12 @@ export default {
 .scroll {
   height: calc(100% - 20px);
   width: calc(100% - 5px);
-  overflow-y: scroll;
+  overflow: Auto;
+}
+.md-content {
+  max-width: 400px;
+  max-height: 200px;
+  overflow: auto;
 }
 </style>
 
