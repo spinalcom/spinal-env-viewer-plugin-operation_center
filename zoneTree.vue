@@ -1,8 +1,9 @@
 
 <template>
-  <div class="tree">
-    <md-button>
-      <div class="block">
+  <div class="zoneTree">
+
+    <div class="block">
+      <md-button>
 
         <md-button class="md-icon-button"
                    @click="toggleShow()">
@@ -17,94 +18,69 @@
         </md-button>
 
         <md-button class="md-icon-button"
-                   @click="onAddChild( parent)">
+                   @click="onAddChild()">
           <md-icon>add</md-icon>
           <md-tooltip md-direction="top">New Zone</md-tooltip>
         </md-button>
 
         <md-button class="md-icon-button"
-                   @click="onRemove( parent)">
+                   @click="onRemove()">
           <md-icon>clear</md-icon>
         </md-button>
 
-      </div>
-    </md-button>
+      </md-button>
+    </div>
 
     <div v-show="show">
-
       <md-list v-if="arrayTree.length>0">
         <md-list-item class="adjust"
                       v-for="child in arrayTree"
                       :key="child.title">
-          <tree :parent="child"></tree>
+          <zoneTree :parent="child"></zoneTree>
         </md-list-item>
       </md-list>
-
-      <!-- <md-list class=" adjust">
-      <md-list-item v-for="index in parent.children.length"
-                    :key="parent.children[index-1].title.get()">
-        <div class="adjust">
-          <tree :parent="parent.children[index-1]"></tree>
-        </div>
-      </md-list-item>
-    </md-list> -->
     </div>
 
   </div>
 </template>
 
 <script>
-import tree from "./tree.vue";
-import { ConfigurationNode as Node } from "./configurationModel";
+import zoneTree from "./zoneTree.vue";
 import EventBus from "./EventBus.vue";
 export default {
-  name: "tree",
+  name: "zoneTree",
   data() {
     return {
-      id: 1,
       arrayTree: [],
       show: false,
       hideShowIcon: "keyboard_arrow_right"
-      // title: ""
     };
   },
   components: {
-    tree: tree
+    zoneTree: zoneTree
   },
   props: ["parent"],
   methods: {
-    theif: function() {
-      // console.log(this.parent);
-      return this.parent.children.length > 0;
-    },
-    incrementId: function() {
-      return this.id++;
-    },
     getArray: function() {
       this.arrayTree = [];
       for (let i = 0; i < this.parent.children.length; i++) {
         this.arrayTree.push(this.parent.children[i]);
       }
     },
-    onAddChild: function(parent) {
-      var parentTitle = parent.title.get();
-      this.addChild(parent, parentTitle + "-" + this.incrementId().toString());
+    onAddChild: function() {
+      this.parent.createChild();
       this.setShow();
     },
-    addChild: function(parent, title) {
-      var child = new Node(parent);
-      child.setTitle(title);
-      parent.addChild(child);
+
+    onRemove: function() {
+      this.remove();
     },
-    onRemove: function(parent) {
-      this.remove(parent);
+    remove: function() {
+      if (this.parent.isRoot()) this.removeRoot();
+      else this.parent.remove();
     },
-    remove: function(parent) {
-      if (parent.isRoot()) this.removeRoot(parent);
-      else parent.remove();
-    },
-    removeRoot: function(parent) {
-      EventBus.$emit("removeRoot", parent);
+    removeRoot: function() {
+      EventBus.$emit("removeRoot", this.parent);
     },
     refresh: function() {
       this.getArray();

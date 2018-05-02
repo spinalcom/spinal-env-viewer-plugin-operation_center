@@ -18,9 +18,22 @@ export class BasicConfigurationNode extends window.Model {
   constructor() {
     super();
     this.add_attr({
+      id: 0,
       title: "",
       children: []
     });
+  }
+
+  incrementId() {
+    this.id.set(this.id.get() + 1);
+    return this.id.get();
+  }
+
+  createChild() {
+    let parentTitle = this.title.get();
+    let child = new ConfigurationNode(this);
+    child.setTitle(parentTitle + "-" + this.incrementId().toString());
+    this.addChild(child);
   }
 
   addChild(child) {
@@ -61,6 +74,12 @@ export class BasicConfigurationNode extends window.Model {
   }
 }
 
+export class ConfigurationRoot extends BasicConfigurationNode {
+  constructor() {
+    super();
+  }
+}
+
 export class ConfigurationNode extends BasicConfigurationNode {
   constructor(newParent) {
     super();
@@ -88,12 +107,6 @@ export class ConfigurationNode extends BasicConfigurationNode {
   }
 }
 
-export class ConfigurationRoot extends BasicConfigurationNode {
-  constructor() {
-    super();
-  }
-}
-
 export class Forest extends window.Model {
   constructor() {
     super();
@@ -103,72 +116,19 @@ export class Forest extends window.Model {
     });
   }
 
+  incrementId() {
+    this.id.set(this.id.get() + 1);
+    return this.id.get();
+  }
+
   addTree(title) {
     var tree = new ConfigurationRoot();
-    tree.setTitle(title);
+    tree.setTitle(title + " " + this.incrementId().toString());
     this.list.push(tree);
   }
+
+  removeTree(root) {
+    this.list.remove(root);
+    delete FileSystem._objects[root._server_id];
+  }
 }
-
-// export default class Zone extends Node {
-
-//   constructor(data) {
-//     super();
-//     this.parent = null;
-//     this.title = '';
-//     this.children = [];
-//   };
-
-//   addChild(child) {
-//     child.setParent(this);
-//     this.children.push(child);
-//     return child;
-//   }
-
-//   addChildren(children) {
-//     children.forEach(child => {
-//       child.setParent(this);
-//       this.children.push(child);
-//     });
-//   }
-
-//   getChildren() {
-//     return this.children;
-//   }
-
-//   getTitle() {
-//     return this.title;
-//   }
-
-//   setTitle(title) {
-//     this.title = title;
-//   }
-
-//   setParent(parent) {
-//     this.parent = parent;
-//   }
-
-//   getParent() {
-//     return this.parent
-//   }
-
-//   isRoot() {
-//     return (this.parent === null);
-//   }
-
-//   isLeaf() {
-//     if (this.children.size() == 0)
-//       return true;
-//     else
-//       return false;
-//   }
-
-//   removeParent() {
-//     this.parent = null;
-//   }
-
-//   removeChildren() {
-//     this.parent = null;
-//   }
-
-// }

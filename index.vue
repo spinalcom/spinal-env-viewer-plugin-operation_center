@@ -1,10 +1,10 @@
 <script>
 import Vue from "vue";
-import forest from "./forest.vue";
+import forest from "./zoneForest.vue";
 const ComponentCtor = Vue.extend(forest);
-const ClassName = "ForgeExtention";
-const PanelTitle = "ForgeExtention";
-const ButtonLabel = "ForgeExtention";
+const ClassName = "zoneForest";
+const PanelTitle = "configuration";
+const ButtonLabel = "configuration";
 const ButtonIcon = "done";
 const classExtention = class {
   constructor(viewer, options) {
