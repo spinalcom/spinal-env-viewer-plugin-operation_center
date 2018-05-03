@@ -1,29 +1,27 @@
 
 <template>
-  <div class="zoneForest aForest">
+  <div class="networkForest aForest">
 
     <div class='mainButtons'>
       <md-button class="md-icon-button"
-                 @click="onCreateTree">
-        <md-icon>add</md-icon>
-        <md-tooltip>Create Tree</md-tooltip>
+                 @click="onPrintForest">
+        <md-icon>print</md-icon>
+        <md-tooltip>print networkForest</md-tooltip>
       </md-button>
 
       <md-button class="md-icon-button"
-                 @click="onPrintForest">
-        <md-icon>print</md-icon>
-        <md-tooltip>print zoneForest</md-tooltip>
+                 @click="onAddSupervisor">
+        <md-icon>add</md-icon>
+        <md-tooltip>addSupervisor</md-tooltip>
       </md-button>
     </div>
-
-    <shared-tool-bar></shared-tool-bar>
 
     <div class='mainMenu'>
       <md-list class=" md-scrollbar ">
         <md-list-item class="adjust"
-                      v-for="t in zoneArray"
+                      v-for="t in equipArray"
                       :key="t.title">
-          <zoneTree :parent="t"></zoneTree>
+          <networkTree :parent="t"></networkTree>
         </md-list-item>
       </md-list>
     </div>
@@ -32,62 +30,52 @@
 </template>
 
 <script>
-import zoneTree from "./zoneTree.vue";
+import networkTree from "./networkTree.vue";
 import EventBus from "./EventBus.vue";
-import sharedToolBar from "./sharedToolBar.vue";
-import { ConfigurationModel } from "./configurationModel";
+import { Forest as networkForest } from "./configurationModel";
 export default {
-  name: "zoneForest",
+  name: "networkForest",
   data() {
     return {
       zoneForest: null,
-      title: "Zone",
-      zoneArray: [],
+      equipForest: null,
+      title: "equip",
+      equipArray: [],
       spinalSystem: window.spinalSystem
     };
   },
   components: {
-    zoneTree: zoneTree,
-    sharedToolBar: sharedToolBar
+    networkTree: networkTree
   },
   methods: {
     getArray: function() {
-      this.zoneArray = [];
+      this.equipArray = [];
       if (this.zoneForest)
         for (let i = 0; i < this.zoneForest.list.length; i++) {
-          this.zoneArray.push(this.zoneForest.list[i]);
+          this.equipArray = this.zoneForest.getEquipements();
         }
-    },
-    onCreateTree: function() {
-      if (this.zoneForest) this.zoneForest.addTree(this.title);
     },
     onModelChange: function() {
       this.getArray();
     },
     onPrintForest: function() {
-      if (this.zoneForest) console.log(this.zoneForest.list);
+      //   console.log(this.zoneForest.getEquipements());
+      if (this.equipArray) console.log(this.equipArray);
     },
-    getEvents: function() {
-      EventBus.$on("removeRoot", root => {
-        if (this.zoneForest) this.zoneForest.removeTree(root);
-      });
+    onAddSupervisor: function() {
+      if (this.equipForest) this.equipForest.addTree(this.title);
     },
+    getEvents: function() {},
     linkToDB: function() {
       this.spinalSystem.getModel().then(forgefile => {
         if (forgefile) {
           if (forgefile.configurationModel) {
             forgefile.configurationModel.load(model => {
               this.zoneForest = model.zoneForest;
+              this.networkForest = model.networkForest;
               this.zoneForest.bind(this.onModelChange);
+              this.networkForest.bind(this.onModelChange);
             });
-          } else {
-            let configurationModel = new ConfigurationModel();
-            this.zoneForest = configurationModel.zoneForest;
-            console.log("forest", this.zoneForest);
-            forgefile.add_attr({
-              configurationModel: new Ptr(configurationModel)
-            });
-            this.zoneForest.bind(this.onModelChange);
           }
         }
       });
@@ -128,6 +116,13 @@ export default {
   max-width: 400px;
   max-height: 200px;
   overflow: auto;
+}
+.networkTree {
+  width: calc(50% - 10px);
+  display: inline-block;
+  vertical-align: top;
+  overflow: auto;
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }
 </style>
 

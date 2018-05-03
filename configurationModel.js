@@ -22,7 +22,8 @@ export class BasicConfigurationNode extends globalType.Model {
       id: 0,
       title: "",
       children: [],
-      display: true
+      display: false,
+      type: ""
     });
   }
 
@@ -31,10 +32,17 @@ export class BasicConfigurationNode extends globalType.Model {
     return this.id.get();
   }
 
-  createChild() {
-    let parentTitle = this.title.get();
+  createChild(_type) {
     let child = new ConfigurationNode(this);
-    child.setTitle(parentTitle + "-" + this.incrementId().toString());
+    // console.log("type", _type);
+    if (_type === "zone") {
+      let parentTitle = this.title.get();
+      child.setTitle(parentTitle + "-" + this.incrementId().toString());
+      child.type.set(_type);
+    } else if (_type === "equip") {
+      child.setTitle("equip" + "-" + this.incrementId().toString());
+      child.type.set(_type);
+    }
     this.addChild(child);
   }
 
@@ -73,6 +81,24 @@ export class BasicConfigurationNode extends globalType.Model {
   isRoot() {
     if (this.parent) return false;
     else return true;
+  }
+
+  isEquipement() {
+    return this.type.get() === "equip";
+  }
+
+  getEquipements() {
+    let equipementsArray = [];
+    for (let i = 0; i < this.children.length; i++) {
+      const equip = this.children[i];
+      // console.log("recur", equip.type.get());
+      // console.log(equipementsArray);
+      // console.log(equip.isEquipement());
+      if (equip.isEquipement())
+        equipementsArray = equipementsArray.concat(equip);
+      else equipementsArray = equipementsArray.concat(equip.getEquipements());
+    }
+    return equipementsArray;
   }
 }
 
@@ -132,5 +158,25 @@ export class Forest extends globalType.Model {
   removeTree(root) {
     this.list.remove(root);
     delete FileSystem._objects[root._server_id];
+  }
+
+  getEquipements() {
+    let equipementsArray = [];
+    for (let i = 0; i < this.list.length; i++) {
+      const tree = this.list[i];
+      // console.log(equipementsArray);
+      equipementsArray = equipementsArray.concat(tree.getEquipements());
+    }
+    return equipementsArray;
+  }
+}
+
+export class ConfigurationModel extends globalType.Model {
+  constructor() {
+    super();
+    this.add_attr({
+      zoneForest: new Forest(),
+      equipForest: new Forest()
+    });
   }
 }
