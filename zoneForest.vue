@@ -16,6 +16,8 @@
       </md-button>
     </div>
 
+    <shared-tool-bar></shared-tool-bar>
+
     <div class='mainMenu'>
       <md-list class="scroll">
         <md-list-item class="adjust"
@@ -30,9 +32,9 @@
 </template>
 
 <script>
-import DialogPrompt from "./dialogPrompt.vue";
 import zoneTree from "./zoneTree.vue";
 import EventBus from "./EventBus.vue";
+import sharedToolBar from "./sharedToolBar.vue";
 import {
   ConfigurationNode as Node,
   ConfigurationRoot as Root,
@@ -42,7 +44,6 @@ export default {
   name: "zoneForest",
   data() {
     return {
-      showDialog: false,
       zoneForest: {},
       title: "Zone",
       arrayForest: [],
@@ -51,7 +52,7 @@ export default {
   },
   components: {
     zoneTree: zoneTree,
-    DialogPrompt: DialogPrompt
+    sharedToolBar: sharedToolBar
   },
   methods: {
     getArray: function() {

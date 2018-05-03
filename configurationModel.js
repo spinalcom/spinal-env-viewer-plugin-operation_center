@@ -14,13 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Soda. If not, see <http://www.gnu.org/licenses/>.
 
-export class BasicConfigurationNode extends window.Model {
+let globalType = window ? window : global;
+export class BasicConfigurationNode extends globalType.Model {
   constructor() {
     super();
     this.add_attr({
       id: 0,
       title: "",
-      children: []
+      children: [],
+      display: true
     });
   }
 
@@ -107,7 +109,7 @@ export class ConfigurationNode extends BasicConfigurationNode {
   }
 }
 
-export class Forest extends window.Model {
+export class Forest extends globalType.Model {
   constructor() {
     super();
     this.add_attr({

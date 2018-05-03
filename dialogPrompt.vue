@@ -2,22 +2,35 @@
   <div>
     <md-dialog-prompt :md-active.sync="active"
                       v-model="value"
-                      md-title="Add Section"
+                      :md-title="oldTitle"
                       md-input-maxlength="30"
-                      md-input-placeholder="Section name ..."
-                      md-confirm-text="Create" />
-    <md-button class="md-primary md-raised"
-               @click="active = true">Prompt</md-button>
-    <span v-if="value">Value: {{ value }}</span>
+                      md-confirm-text="Change"
+                      @md-confirm="sendEvent()"
+                      @md-cancel="cancelEvent()" />
   </div>
 </template>
 
 <script>
+import EventBus from "./EventBus.vue";
 export default {
   name: "DialogPrompt",
-  data: () => ({
-    active: false,
-    value: null
-  })
+  data() {
+    return {
+      value: ""
+    };
+  },
+  props: ["active", "oldTitle : string"],
+  methods: {
+    sendEvent: function() {
+      var toSend = this.value;
+      this.value = "";
+      EventBus.$emit("promptValue", toSend);
+      console.log("test", this.oldTitle);
+    },
+    cancelEvent: function() {
+      this.value = "";
+      EventBus.$emit("disablePrompt");
+    }
+  }
 };
 </script>
