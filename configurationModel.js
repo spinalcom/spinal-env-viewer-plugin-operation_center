@@ -176,7 +176,7 @@ export class ConfigurationModel extends globalType.Model {
     super();
     this.add_attr({
       zoneForest: new Forest(),
-      equipForest: new Forest()
+      networkForest: new Forest()
     });
   }
 }

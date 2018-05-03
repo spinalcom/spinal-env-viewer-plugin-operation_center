@@ -122,12 +122,7 @@ export default {
 .md-scrollbar {
   height: calc(100% - 20px);
   width: calc(100% - 5px);
-  overflow: Auto;
-}
-.md-content {
-  max-width: 400px;
-  max-height: 200px;
-  overflow: auto;
+  overflow-y: scroll;
 }
 </style>
 

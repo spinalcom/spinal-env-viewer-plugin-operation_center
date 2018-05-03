@@ -9,6 +9,7 @@
                         md-input-maxlength="200"
                         md-confirm-text="Change"
                         @md-confirm="changeTitle()" />
+
       <md-list>
         <md-list-item>
           <div class="md-list-item-text">
@@ -24,6 +25,22 @@
                      @click="onEditTitle()">
             <md-icon>edit</md-icon>
           </md-button>
+
+          <!-- <md-menu md-close-on-select
+                   md-direction="bottom-start">
+            <md-button md-menu-trigger
+                       class="md-icon-button"
+                       @click="onEditType()">
+              <md-icon>mode_edit</md-icon>
+            </md-button>
+
+            <md-select v-model="firstDayOfAWeek">
+              <md-option value="0">Sunday</md-option>
+              <md-option value="1">Monday</md-option>
+            </md-select>
+
+          </md-menu> -->
+
         </md-list-item>
       </md-list>
     </div>
@@ -41,7 +58,8 @@ export default {
       self: null,
       title: "select a zone",
       prompt: false,
-      preSelected: null
+      preSelected: null,
+      disableSelection: false
     };
   },
   components: {
@@ -82,9 +100,20 @@ export default {
       return this.self ? this.self.title.get() : this.title;
     },
     onEditTitle: function() {
-      if (this.self.title) this.prompt = true;
-    }
+      if (this.self) this.prompt = true;
+    },
+    onEditType: function() {}
   },
+  // computed: {
+  //   firstDayOfAWeek: {
+  //     get() {
+  //       return this.$material.locale.firstDayOfAWeek;
+  //     },
+  //     set(val) {
+  //       this.$material.locale.firstDayOfAWeek = val;
+  //     }
+  //   }
+  // },
   mounted() {
     this.getEvents();
   }

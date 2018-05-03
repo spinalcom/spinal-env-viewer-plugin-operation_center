@@ -62,6 +62,7 @@ const classExtention = class {
     button1.setToolTip(ButtonLabel1);
 
     this.panel2 = new PanelClass(this.viewer, PanelTitle2);
+    this.panel2.container.style.left = "600px";
     var button2 = new Autodesk.Viewing.UI.Button(ButtonLabel2);
     button2.onClick = e => {
       if (!this.panel2.isVisible()) {

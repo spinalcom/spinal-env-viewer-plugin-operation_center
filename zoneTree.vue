@@ -28,7 +28,7 @@
 
           <md-button class="md-icon-button"
                      @click="onAddEquip()">
-            <md-icon>add</md-icon>
+            <md-icon>add_to_queue</md-icon>
             <md-tooltip md-direction="top">New Equip</md-tooltip>
           </md-button>
 

@@ -16,15 +16,36 @@
       </md-button>
     </div>
 
-    <div class='mainMenu'>
-      <md-list class=" md-scrollbar ">
-        <md-list-item class="adjust"
-                      v-for="t in equipArray"
-                      :key="t.title">
-          <networkTree :parent="t"></networkTree>
-        </md-list-item>
-      </md-list>
-    </div>
+    <!-- <md-list style="display: inline-block">
+      <md-list-item>
+        <div class='mainMenuLeft'>
+          <md-list class=" md-scrollbar ">
+            <md-list-item class="adjust"
+                          v-for="t in equipArray"
+                          :key="t.title">
+              <networkTree :parent="t"></networkTree>
+            </md-list-item>
+          </md-list>
+        </div>
+      </md-list-item>
+
+      <md-list-item>
+        <div class='mainMenuRight'>
+          <md-list class=" md-scrollbar ">
+            <md-list-item v-for="t in equipArray"
+                          :key="t.title">
+              <networkTree :parent="t"></networkTree>
+            </md-list-item>
+          </md-list>
+        </div>
+      </md-list-item>
+    </md-list> -->
+    <md-list class=" md-scrollbar ">
+      <md-list-item v-for="t in equipArray"
+                    :key="t.title">
+        <networkTree :parent="t"></networkTree>
+      </md-list-item>
+    </md-list>
 
   </div>
 </template>
@@ -38,9 +59,10 @@ export default {
   data() {
     return {
       zoneForest: null,
-      equipForest: null,
+      networkForest: null,
       title: "equip",
       equipArray: [],
+      networkArray: [],
       spinalSystem: window.spinalSystem
     };
   },
@@ -63,7 +85,7 @@ export default {
       if (this.equipArray) console.log(this.equipArray);
     },
     onAddSupervisor: function() {
-      if (this.equipForest) this.equipForest.addTree(this.title);
+      if (this.networkForest) this.networkForest.addTree(this.title);
     },
     getEvents: function() {},
     linkToDB: function() {
@@ -94,31 +116,36 @@ export default {
   width: calc(100% - 10px);
   /* border: 3px purple dashed; */
 }
-.adjust {
-  padding: 0;
-  width: calc(100% - 5px);
-  /* border: 1px red dashed; */
-}
+
 .mainButtons {
   /* border: 1px green dashed; */
+
   display: block;
 }
+
 .mainMenu {
+  width: calc(100% - 10px);
+  display: inline-block;
+  /* border: 1px yellow dashed; */
+}
+.mainMenuLeft {
+  width: calc(40% - 10px);
+  height: calc(100% - 80px);
+  /* border: 1px yellow dashed; */
+}
+
+.mainMenuRight {
+  width: calc(40% - 10px);
   height: calc(100% - 80px);
   /* border: 1px yellow dashed; */
 }
 .md-scrollbar {
   height: calc(100% - 20px);
   width: calc(100% - 5px);
-  overflow: Auto;
-}
-.md-content {
-  max-width: 400px;
-  max-height: 200px;
   overflow: auto;
 }
 .networkTree {
-  width: calc(50% - 10px);
+  width: calc(100% - 10px);
   display: inline-block;
   vertical-align: top;
   overflow: auto;
