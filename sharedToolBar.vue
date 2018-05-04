@@ -26,6 +26,21 @@
             <md-icon>edit</md-icon>
           </md-button>
 
+          <md-button class="md-icon-button"
+                     @click="getSelected()">
+            <md-icon>add_to_photos</md-icon>
+          </md-button>
+
+          <md-button class="md-icon-button"
+                     @click="isolate()">
+            <md-icon>visibility_off</md-icon>
+          </md-button>
+
+          <md-button class="md-icon-button"
+                     @click="showAll()">
+            <md-icon>visibility</md-icon>
+          </md-button>
+
           <!-- <md-menu md-close-on-select
                    md-direction="bottom-start">
             <md-button md-menu-trigger
@@ -51,6 +66,11 @@
 <script>
 import DialogPrompt from "./dialogPrompt.vue";
 import EventBus from "./EventBus.vue";
+import {
+  SpinalBIMGroup as BIMGroup,
+  SpinalBIMObject as BIMObject
+} from "./configurationModel.js";
+let globalType = window ? window : global;
 export default {
   name: "sharedToolBar",
   data() {
@@ -59,7 +79,8 @@ export default {
       title: "select a zone",
       prompt: false,
       preSelected: null,
-      disableSelection: false
+      disableSelection: false,
+      viewer: v
     };
   },
   components: {
@@ -75,7 +96,8 @@ export default {
         else {
           let parent = this.self.parent;
           this.self.remove();
-          if (parent.children.length == 0) parent.display.set(false);
+          if (parent.children.length == 0 && parent.BIMGroup.items.length == 0)
+            parent.display.set(false);
         }
         this.self = null;
         this.title = "select a zone";
@@ -92,7 +114,7 @@ export default {
       EventBus.$on("sendContext", _self => {
         if (this.preSelected) this.preSelected.deselect();
         this.preSelected = _self;
-        this.self = _self.parent;
+        this.self = _self.node;
         this.title = this.getTitle();
       });
     },
@@ -102,7 +124,27 @@ export default {
     onEditTitle: function() {
       if (this.self) this.prompt = true;
     },
-    onEditType: function() {}
+    onEditType: function() {},
+    getSelected: function() {
+      //TODO check if a leaf of the autodesk tree
+      let selected = this.viewer.getSelection();
+      for (let i = 0; i < selected.length; i++) {
+        const itemId = selected[i];
+        if (this.self) {
+          this.self.BIMGroup.addItem(itemId);
+          this.self.display.set(true);
+        }
+      }
+    },
+    isolate() {
+      if (this.self) {
+        this.self.BIMGroup.isolate();
+        console.log("done");
+      }
+    },
+    showAll() {
+      globalType.v.showAll();
+    }
   },
   // computed: {
   //   firstDayOfAWeek: {

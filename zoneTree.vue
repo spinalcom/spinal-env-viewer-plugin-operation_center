@@ -3,8 +3,7 @@
   <div class="zoneTree">
 
     <div @click="sendContext()"
-         class="viewport1"
-         v-bind:class="{selected : isSelected}">
+         v-bind:class="{zoneTreeselect : isSelected}">
 
       <md-list>
         <md-list-item>
@@ -17,7 +16,7 @@
           </md-button>
 
           <div class="md-list-item-text">
-            <span>{{parent.title.get()}}</span>
+            <span>{{node.title.get()}}</span>
           </div>
 
           <md-button class="md-icon-button"
@@ -37,15 +36,17 @@
 
     </div>
 
-    <div v-show="this.parent.display.get()">
+    <div v-show="this.node.display.get()">
       <md-list v-if="arrayTree.length>0">
         <md-list-item class="adjust  "
                       v-for="child in arrayTree"
                       :key="child.title">
-          <zoneTree :parent="child"></zoneTree>
+          <zoneTree :node="child"></zoneTree>
         </md-list-item>
       </md-list>
     </div>
+
+    <bim-group :node="node"></bim-group>
 
   </div>
 </template>
@@ -54,32 +55,35 @@
 import DialogPrompt from "./dialogPrompt.vue";
 import zoneTree from "./zoneTree.vue";
 import EventBus from "./EventBus.vue";
+import BIMGroup from "./BIMGroup.vue";
 export default {
   name: "zoneTree",
   data() {
     return {
       arrayTree: [],
       hideShowIcon: "keyboard_arrow_right",
-      isSelected: false
+      isSelected: false,
+      itemSelected: true
     };
   },
   components: {
-    zoneTree: zoneTree
+    zoneTree: zoneTree,
+    bimGroup: BIMGroup
   },
-  props: ["parent"],
+  props: ["node"],
   methods: {
     getArray: function() {
       this.arrayTree = [];
-      for (let i = 0; i < this.parent.children.length; i++) {
-        this.arrayTree.push(this.parent.children[i]);
+      for (let i = 0; i < this.node.children.length; i++) {
+        this.arrayTree.push(this.node.children[i]);
       }
     },
     onAddChild: function() {
-      this.parent.createChild("zone");
+      this.node.createChild("zone");
       this.setShow();
     },
     onAddEquip: function() {
-      this.parent.createChild("equip");
+      this.node.createChild("equip");
       this.setShow();
     },
     sendContext: function() {
@@ -87,18 +91,25 @@ export default {
       this.isSelected = true;
     },
 
+    select: function() {
+      this.itemSelected = true;
+    },
+
     refresh: function() {
       this.getArray();
-      this.hideShowIcon = this.parent.display.get()
+      this.hideShowIcon = this.node.display.get()
         ? "keyboard_arrow_down"
         : "keyboard_arrow_right";
     },
     toggleShow: function() {
-      if (this.parent.display.get()) {
-        this.parent.display.set(false);
+      if (this.node.display.get()) {
+        this.node.display.set(false);
         // this.hideShowIcon = "keyboard_arrow_right";
-      } else if (this.parent.children.length > 0) {
-        this.parent.display.set(true);
+      } else if (
+        this.node.children.length > 0 ||
+        this.node.BIMGroup.items.length > 0
+      ) {
+        this.node.display.set(true);
         // this.hideShowIcon = "keyboard_arrow_down";
       }
     },
@@ -106,48 +117,20 @@ export default {
       this.isSelected = false;
     },
     setShow: function() {
-      this.parent.display.set(true);
+      this.node.display.set(true);
       // this.hideShowIcon = "keyboard_arrow_down";
     }
   },
   mounted() {
-    this.parent.bind(this.refresh);
+    this.node.bind(this.refresh);
   }
 };
 </script>
 
 
 <style scoped>
-/* .adjust {
-  width: calc(100% - 5px);
-  border: 1px yellow dashed;
-} */
-.block {
-  display: inline;
-}
-.zone {
-  margin: 0px;
-}
-.md-layout-item:after {
-  width: 100%;
-  height: 100%;
-  display: block;
-  background: #a5d6a7;
-  content: " ";
-}
-.text {
-  color: white;
-}
-</style>
-
-<style>
-.adjust .md-list-item-content {
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-right: 0px;
-  padding-left: 8px;
-}
 .zoneTree {
+  height: calc(100% - 10px);
   width: calc(100% - 10px);
   max-width: 100%;
   display: inline-block;
@@ -155,26 +138,10 @@ export default {
   overflow: auto;
   border: 1px solid rgba(0, 0, 0, 0.12);
 }
-.viewport1 {
-  width: calc(100% - 5px);
-  max-width: 100%;
-  display: inline-block;
-  vertical-align: top;
-  overflow: auto;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-}
-/* .viewport1 /deep/ ul {
-  padding: 0px;
-  background-color: rgba(196, 20, 58, 0.5);
-} */
-
-.md-list {
-  padding: 0px;
-}
 </style>
 
 <style>
-.selected > ul > li > div > div {
+.zoneTreeselect > ul > li > div > div {
   background-color: rgba(196, 20, 58, 0.5);
 }
 </style>

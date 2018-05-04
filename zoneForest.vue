@@ -1,6 +1,6 @@
 
 <template>
-  <div class="zoneForest aForest">
+  <div class="zoneForest">
 
     <div class='mainButtons'>
       <md-button class="md-icon-button"
@@ -23,7 +23,7 @@
         <md-list-item class="adjust"
                       v-for="t in zoneArray"
                       :key="t.title">
-          <zoneTree :parent="t"></zoneTree>
+          <zoneTree :node="t"></zoneTree>
         </md-list-item>
       </md-list>
     </div>
@@ -101,28 +101,26 @@ export default {
 </script>
 
 <style scoped>
-.aForest {
+.zoneForest {
   height: calc(100% - 45px);
   width: calc(100% - 10px);
-  /* border: 3px purple dashed; */
 }
-.adjust {
-  padding: 0;
-  width: calc(100% - 5px);
-  /* border: 1px red dashed; */
-}
+
 .mainButtons {
-  /* border: 1px green dashed; */
   display: block;
 }
 .mainMenu {
   height: calc(100% - 80px);
-  /* border: 1px yellow dashed; */
 }
 .md-scrollbar {
   height: calc(100% - 20px);
   width: calc(100% - 5px);
   overflow-y: scroll;
+}
+
+.adjust {
+  padding: 0;
+  width: calc(100% - 5px);
 }
 </style>
 
