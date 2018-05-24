@@ -80,7 +80,7 @@ export default {
       prompt: false,
       preSelected: null,
       disableSelection: false,
-      viewer: v
+      viewer: globalType.v
     };
   },
   components: {
@@ -91,6 +91,7 @@ export default {
       this.remove();
     },
     remove: function() {
+      EventBus.$emit("removeZone", this.self);
       if (this.self) {
         if (this.self.isRoot()) this.removeRoot();
         else {
@@ -111,7 +112,7 @@ export default {
       prompt: false;
     },
     getEvents: function() {
-      EventBus.$on("sendContext", _self => {
+      EventBus.$on("zoneTreeContext", _self => {
         if (this.preSelected) this.preSelected.deselect();
         this.preSelected = _self;
         this.self = _self.node;
@@ -139,7 +140,7 @@ export default {
     isolate() {
       if (this.self) {
         this.self.BIMGroup.isolate();
-        console.log("done");
+        // console.log("done");
       }
     },
     showAll() {

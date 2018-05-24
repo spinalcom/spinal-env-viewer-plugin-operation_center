@@ -1,17 +1,17 @@
 <script>
 import Vue from "vue";
 import zoneForest from "./zoneForest.vue";
-import networkForest from "./networkForest.vue";
+import chart from "./chart.vue";
 const ComponentCtor1 = Vue.extend(zoneForest);
-const ComponentCtor2 = Vue.extend(networkForest);
+const ComponentCtor2 = Vue.extend(chart);
 const ClassName = "Configuration";
 
 const PanelTitle1 = "configuration-zone";
 const ButtonLabel1 = "configuration-zone";
 const ButtonIcon1 = "settings";
-
-const PanelTitle2 = "configuration-network";
-const ButtonLabel2 = "configuration-network";
+// configuration-network
+const PanelTitle2 = "Time-Series";
+const ButtonLabel2 = "Time-Series";
 const ButtonIcon2 = "perm_data_setting";
 
 const classExtention = class {
@@ -107,7 +107,7 @@ export default new class {
       ClassName,
       classExtention
     ); // this is the register of your class
-    window.ForgeExtentionManager.addExtention(ClassName);
+    window.spinal.ForgeExtentionManager.addExtention(ClassName);
   }
 }();
 </script>

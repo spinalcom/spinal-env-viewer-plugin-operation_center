@@ -1,4 +1,4 @@
-import { BIMGroup } from "./endpointModel";
+import EventBus from "./EventBus.vue";
 
 // Copyright 2015 SpinalCom  www.spinalcom.com
 
@@ -16,18 +16,25 @@ import { BIMGroup } from "./endpointModel";
 // You should have received a copy of the GNU General Public License
 // along with Soda. If not, see <http://www.gnu.org/licenses/>.
 
-let globalType = window ? window : global;
+const spinalCore = require("spinal-core-connectorjs");
+const globalType = typeof window === "undefined" ? global : window;
+
 export class BasicConfigurationNode extends globalType.Model {
   constructor() {
     super();
-    this.add_attr({
-      id: 0,
-      title: "",
-      children: [],
-      display: false,
-      type: "",
-      BIMGroup: new SpinalBIMGroup()
-    });
+    if (FileSystem._sig_server) {
+      this.add_attr({
+        id: 0,
+        title: "",
+        children: [],
+        display: false,
+        type: "",
+        BIMGroup: new SpinalBIMGroup(this),
+        special: false
+      });
+    }
+
+    // console.error("constructor", this.BIMGroup)
   }
 
   incrementId() {
@@ -103,6 +110,34 @@ export class BasicConfigurationNode extends globalType.Model {
     }
     return equipementsArray;
   }
+
+  getAllBIMGroups() {
+    let res = [];
+    res.push(this.BIMGroup);
+    for (let i = 0; i < this.children.length; i++) {
+      const child = this.children[i];
+      res = res.concat(child.getAllBIMGroups());
+    }
+    return res;
+  }
+
+  test() {
+    console.log(this)
+  }
+
+  getItems() {
+    let t = [];
+    t = t.concat(this.BIMGroup.arrayOfId());
+    for (let i = 0; i < this.children.length; i++) {
+      const element = this.children[i];
+      let childItems = element.getItems();
+      for (let i = 0; i < childItems.length; i++) {
+        const element = childItems[i];
+        if (t.indexOf(element) === -1) t.push(element);
+      }
+    }
+    return t;
+  }
 }
 
 export class ConfigurationRoot extends BasicConfigurationNode {
@@ -141,10 +176,12 @@ export class ConfigurationNode extends BasicConfigurationNode {
 export class Forest extends globalType.Model {
   constructor() {
     super();
-    this.add_attr({
-      list: new Lst(),
-      id: 0
-    });
+    if (FileSystem._sig_server) {
+      this.add_attr({
+        list: new Lst(),
+        id: 0
+      });
+    }
   }
 
   incrementId() {
@@ -172,6 +209,16 @@ export class Forest extends globalType.Model {
     }
     return equipementsArray;
   }
+
+  getAllBIMGroups() {
+    let res = [];
+    for (let i = 0; i < this.list.length; i++) {
+      const tree = this.list[i];
+      // console.log(equipementsArray);
+      res = res.concat(tree.getAllBIMGroups());
+    }
+    return res;
+  }
 }
 
 export class ConfigurationModel extends globalType.Model {
@@ -186,15 +233,35 @@ export class ConfigurationModel extends globalType.Model {
 
 var BIMGroupId = 0;
 export class SpinalBIMGroup extends globalType.Model {
-  constructor(name = "BIMGroup") {
+  constructor(_parent, name = "BIMGroup") {
     super();
     this.add_attr({
       display: true,
       id: BIMGroupId++,
       title: "",
       color: "",
-      items: []
+      currentValue: 0,
+      timeSeries: [],
+      items: [],
+      parent: _parent,
     });
+    this.populateTimeSeries();
+  }
+
+  populateTimeSeries() {
+    // console.log("test")
+    let max = 30;
+    let intervalle = 2;
+    setInterval(() => {
+      // console.log(this, this.timeSeries.get())
+      if (this.timeSeries.length >= max) {
+        this.timeSeries.shift();
+        this.timeSeries.push(this.currentValue.get())
+
+      } else {
+        this.timeSeries.push(this.currentValue.get())
+      }
+    }, intervalle * 1000);
   }
 
   contains(itemId) {
@@ -203,11 +270,14 @@ export class SpinalBIMGroup extends globalType.Model {
 
   addItem(itemId) {
     if (!this.contains(itemId)) {
-      let newBIMObject = new SpinalBIMObject(itemId);
-      newBIMObject.fillInfo();
-      this.items.push(newBIMObject);
+      let newBIMObject = new SpinalBIMObject(itemId, this.id.get());
+      newBIMObject.fillInfo().then(() => {
+        this.items.push(newBIMObject);
+      });
     }
   }
+
+
 
   addItems(input) {
     // input is a list of items to add
@@ -322,8 +392,8 @@ export class SpinalBIMGroup extends globalType.Model {
     //   G[i] = 0;
     //   B[i] = 0;
     // }
-    let min = 50;
-    let max = 70;
+    let min = 40;
+    let max = 90;
     var lin = this.linMapValue(this.currentValue.get(), min, max);
     // console.log("lin", lin);
     var g = (6 - 2 * dx) * lin + dx;
@@ -358,7 +428,6 @@ export class SpinalBIMGroup extends globalType.Model {
 
     var newcolor = rgbToHex(R, G, B);
     this.color.set(newcolor);
-    // console.log("newcolor", newcolor);
   }
 
   VBColorToHEX(i) {
@@ -395,13 +464,14 @@ export class SpinalBIMGroup extends globalType.Model {
 }
 
 export class SpinalBIMObject extends globalType.Model {
-  constructor(item, name = "BIMObject") {
+  constructor(itemId, groupId, name = "BIMObject") {
     super();
     this.add_attr({
       display: true,
-      id: item,
+      id: itemId,
       title: "",
-      color: ""
+      color: "",
+      groupId: groupId
     });
   }
 
@@ -418,9 +488,11 @@ export class SpinalBIMObject extends globalType.Model {
   }
 
   fillInfo() {
-    globalType.v.getProperties(this.id.get(), r => {
-      this.title.set(r.name);
-      // console.log("title", r);
+    return new Promise((resolve, reject) => {
+      globalType.v.getProperties(this.id.get(), r => {
+        this.title.set(r.name);
+        resolve();
+      });
     });
   }
 
@@ -428,3 +500,12 @@ export class SpinalBIMObject extends globalType.Model {
 
   // }
 }
+
+spinalCore.register_models([BasicConfigurationNode,
+  Forest,
+  ConfigurationModel,
+  ConfigurationNode,
+  ConfigurationRoot,
+  SpinalBIMObject,
+  SpinalBIMGroup
+])

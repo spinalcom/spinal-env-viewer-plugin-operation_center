@@ -40,20 +40,27 @@
         </div>
       </md-list-item>
     </md-list> -->
-    <md-list class=" md-scrollbar ">
+    <!-- <md-list class=" md-scrollbar ">
       <md-list-item v-for="t in equipArray"
                     :key="t.title">
         <networkTree :parent="t"></networkTree>
       </md-list-item>
-    </md-list>
+    </md-list> -->
+
+    <canvas id="myChart"
+            width="400"
+            height="400"></canvas>
 
   </div>
 </template>
 
 <script>
+const globalType = typeof window === "undefined" ? global : window;
+
 import networkTree from "./networkTree.vue";
 import EventBus from "./EventBus.vue";
 import { Forest as networkForest } from "./configurationModel";
+import Chart from "chart.js";
 export default {
   name: "networkForest",
   data() {
@@ -63,7 +70,9 @@ export default {
       title: "equip",
       equipArray: [],
       networkArray: [],
-      spinalSystem: window.spinalSystem
+      spinalSystem: window.spinalSystem,
+      ctx: null,
+      myChart: {}
     };
   },
   components: {
@@ -71,11 +80,11 @@ export default {
   },
   methods: {
     getArray: function() {
-      this.equipArray = [];
-      if (this.zoneForest)
-        for (let i = 0; i < this.zoneForest.list.length; i++) {
-          this.equipArray = this.zoneForest.getEquipements();
-        }
+      // this.equipArray = [];
+      // if (this.zoneForest)
+      //   for (let i = 0; i < this.zoneForest.list.length; i++) {
+      //     this.equipArray = this.zoneForest.getEquipements();
+      //   }
     },
     onModelChange: function() {
       this.getArray();
@@ -87,7 +96,14 @@ export default {
     onAddSupervisor: function() {
       if (this.networkForest) this.networkForest.addTree(this.title);
     },
-    getEvents: function() {},
+    getEvents: function() {
+      EventBus.$on("zoneTreeContext", _self => {
+        if (this.preSelected) this.preSelected.deselect();
+        this.preSelected = _self;
+        this.self = _self.node;
+        this.title = this.getTitle();
+      });
+    },
     linkToDB: function() {
       this.spinalSystem.getModel().then(forgefile => {
         if (forgefile) {
@@ -106,6 +122,63 @@ export default {
 
   mounted() {
     this.linkToDB(), this.getEvents();
+
+    // window.Chart = require("Chart");
+
+    // Vue.use(Chart);
+    var d = 3;
+
+    this.ctx = globalType.document.getElementById("myChart").getContext("2d");
+    this.myChart = new Chart(this.ctx, {
+      type: "line",
+      data: {
+        labels: ["0", "1", "2", "3", "4", "5"],
+        datasets: [
+          {
+            label: "Zone 9",
+            data: [70, 40, d, 50, 65, 55],
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(255, 159, 64, 0.2)"
+            ],
+            borderColor: [
+              "rgba(255,99,132,1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+              "rgba(255, 159, 64, 1)"
+            ],
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                min: 30,
+                max: 90,
+                beginAtZero: false
+              }
+            }
+          ]
+        }
+      }
+    });
+    setInterval(() => {
+      var max = 80;
+      var min = 40;
+      var newValue = (max - min) * Math.random() + min;
+      console.log(newValue);
+      this.myChart.data.datasets[0].data[2] = newValue;
+      this.myChart.update();
+    }, 3000);
   }
 };
 </script>

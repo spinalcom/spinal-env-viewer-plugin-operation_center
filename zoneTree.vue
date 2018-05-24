@@ -19,17 +19,36 @@
             <span>{{node.title.get()}}</span>
           </div>
 
+          <div v-if="node.BIMGroup.currentValue.get()!==0"
+               class="md-list-item-text">
+            <span>{{node.BIMGroup.currentValue.get()}}</span>
+          </div>
+
           <md-button class="md-icon-button"
                      @click="onAddChild()">
             <md-icon>add</md-icon>
             <md-tooltip md-direction="top">New Zone</md-tooltip>
           </md-button>
 
-          <md-button class="md-icon-button"
+          <md-button v-if="!node.special.get()"
+                     class="md-icon-button"
+                     @click="generateRandomValue()">
+            <md-icon>{{grain}}</md-icon>
+            <md-tooltip md-direction="top">Generate Values</md-tooltip>
+          </md-button>
+
+          <md-button disabled
+                     v-if="node.special.get()"
+                     class="md-icon-button">
+            <md-icon>grain</md-icon>
+            <md-tooltip md-direction="top">snmp</md-tooltip>
+          </md-button>
+
+          <!-- <md-button class="md-icon-button"
                      @click="onAddEquip()">
             <md-icon>add_to_queue</md-icon>
             <md-tooltip md-direction="top">New Equip</md-tooltip>
-          </md-button>
+          </md-button> -->
 
         </md-list-item>
       </md-list>
@@ -52,6 +71,7 @@
 </template>
 
 <script>
+let globalType = typeof window === "undefined" ? global : window;
 import DialogPrompt from "./dialogPrompt.vue";
 import zoneTree from "./zoneTree.vue";
 import EventBus from "./EventBus.vue";
@@ -63,7 +83,10 @@ export default {
       arrayTree: [],
       hideShowIcon: "keyboard_arrow_right",
       isSelected: false,
-      itemSelected: true
+      itemSelected: true,
+      simulation: false,
+      grain: "grain",
+      refreshInterval: null
     };
   },
   components: {
@@ -87,14 +110,30 @@ export default {
       this.setShow();
     },
     sendContext: function() {
-      EventBus.$emit("sendContext", this);
+      EventBus.$emit("zoneTreeContext", this);
       this.isSelected = true;
+      // console.log(this.node);
+      // this.node.test();
+      let ids = this.node.getItems();
+      globalType.v.select(ids, Autodesk.Viewing.SelectionMode.MIXED);
     },
-
-    select: function() {
-      this.itemSelected = true;
+    generateRandomValue: function() {
+      if (!this.simulation) {
+        let intervalle = 2;
+        this.refreshInterval = setInterval(() => {
+          let max = 80;
+          let min = 40;
+          let newValue = Math.floor((max - min) * Math.random() + min);
+          this.node.BIMGroup.currentValue.set(newValue);
+        }, intervalle * 1000);
+        this.grain = "stop";
+        this.simulation = true;
+      } else {
+        clearInterval(this.refreshInterval);
+        this.grain = "grain";
+        this.simulation = false;
+      }
     },
-
     refresh: function() {
       this.getArray();
       this.hideShowIcon = this.node.display.get()
@@ -143,5 +182,11 @@ export default {
 <style>
 .zoneTreeselect > ul > li > div > div {
   background-color: rgba(196, 20, 58, 0.5);
+}
+.zoneTree > div > ul {
+  padding: 0;
+}
+.zoneTree > div > ul > li > div > div {
+  padding: 0px 0px 0px 10px;
 }
 </style>
