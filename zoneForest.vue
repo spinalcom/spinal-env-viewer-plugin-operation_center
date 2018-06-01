@@ -11,13 +11,13 @@
         <md-tooltip>Create Tree</md-tooltip>
       </md-button>
 
-      <!-- <md-button class="md-icon-button"
+      <md-button class="md-icon-button"
                  @click="onPrintForest">
         <md-icon>print</md-icon>
         <md-tooltip>print zoneForest</md-tooltip>
       </md-button>
 
-      <md-button class="md-icon-button"
+      <!-- <md-button class="md-icon-button"
                  @click="onSelect">
         <md-icon>print</md-icon>
         <md-tooltip>select</md-tooltip>
@@ -32,15 +32,63 @@
 
     <shared-tool-bar></shared-tool-bar>
 
-    <div class='mainMenu'>
+    <!-- <div class='mainMenu'>
       <md-list class=" md-scrollbar ">
         <md-list-item class="adjust"
                       v-for="t in zoneArray"
-                      :key="t.title">
+                      :key="t.title.get()">
           <zoneTree :node="t"></zoneTree>
         </md-list-item>
       </md-list>
+    </div> -->
+
+    <!-- <div class='mainMenu'>
+      <md-list class=" md-scrollbar ">
+        <md-list-item class="adjust"
+                      v-for="t in zoneForest.list.get()"
+                      :key="t.title.get()"
+                      :title="zoneForest">
+          <zoneTree :node="t"></zoneTree>
+        </md-list-item>
+      </md-list>
+    </div> -->
+
+    <!-- <div class='mainMenu'>
+      <md-list class=" md-scrollbar ">
+        <md-list-item class="adjust"
+                      v-for="index in zoneList.length">
+          {{zoneList[index-1].get()}}
+        </md-list-item>
+      </md-list>
+    </div> -->
+
+    <div class='mainMenu'>
+      <md-list v-if="zoneForest !=null"
+               class=" md-scrollbar ">
+        <md-list-item class="adjust"
+                      v-for="index in zoneForest.list.length"
+                      :key="zoneForest.list[index-1].title.get()">
+          <zoneTree :node="zoneForest.list[index-1]"></zoneTree>
+        </md-list-item>
+      </md-list>
     </div>
+
+    <!-- <div class='mainMenu'>
+
+      <ul id="v-for-object">
+        <li v-for="value in ">
+          {{value}}
+        </li>
+      </ul>
+
+    </div> -->
+
+    <!-- <ul id="v-for-object"
+        class="demo">
+      <li v-for="value in object">
+        {{ value }}
+      </li>
+    </ul> -->
 
   </div>
 </template>
@@ -64,6 +112,7 @@ export default {
       zoneForest: null,
       title: "Zone",
       zoneArray: [],
+      zoneList: new globalType.Lst(["str", "str2"]),
       spinalSystem: globalType.spinal.spinalSystem,
       simulationModel: null,
       viewer: globalType.v,
@@ -72,7 +121,8 @@ export default {
       link: "settings_input_antenna",
       special: false,
       refreshInterval: null,
-      materialsArray: []
+      materialsArray: [],
+      objectTest: new globalType.Lst()
     };
   },
   components: {
@@ -92,6 +142,8 @@ export default {
       if (this.zoneForest) {
         this.zoneForest.addTree(this.title);
       }
+      this.objectTest.push("test");
+      this.zoneList.push("test");
     },
     onModelChange: function() {
       this.getArray();
@@ -213,6 +265,8 @@ export default {
 
     onPrintForest: function() {
       if (this.zoneForest) console.log(this.zoneForest.list);
+      console.log(this.objectTest);
+      console.log(this.zoneList);
     },
     onSelect: function() {
       // var s = new select(v);
@@ -295,6 +349,3 @@ export default {
   padding: 0;
 }
 </style>
-
-
-

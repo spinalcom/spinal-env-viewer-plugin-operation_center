@@ -55,16 +55,25 @@
 
     </div>
 
-    <div v-show="this.node.display.get()">
+    <!-- <div v-show="this.node.display.get()">
       <md-list v-if="arrayTree.length>0">
         <md-list-item class="adjust  "
                       v-for="child in arrayTree"
-                      :key="child.title">
+                      :key="child.title.get()">
           <zoneTree :node="child"></zoneTree>
         </md-list-item>
       </md-list>
-    </div>
+    </div> -->
 
+    <div v-show="node.display.get()">
+      <md-list v-if="node.children.length>0">
+        <md-list-item class="adjust  "
+                      v-for="index in node.children.length"
+                      :key="node.children[index-1].title.get()">
+          <zoneTree :node="node.children[index-1]"></zoneTree>
+        </md-list-item>
+      </md-list>
+    </div>
     <bim-group :node="node"></bim-group>
 
   </div>
