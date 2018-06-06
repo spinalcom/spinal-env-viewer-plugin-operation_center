@@ -1,5 +1,4 @@
 
-import { BIMObject } from './endpointModel';
 <template>
   <div class="BIMGroup"
        v-show="node.display.get()">

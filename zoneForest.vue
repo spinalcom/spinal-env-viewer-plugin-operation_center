@@ -32,12 +32,23 @@
 
     <shared-tool-bar></shared-tool-bar>
 
-    <!-- <div class='mainMenu'>
+    <div class='mainMenu'>
       <md-list class=" md-scrollbar ">
         <md-list-item class="adjust"
                       v-for="t in zoneArray"
                       :key="t.title.get()">
           <zoneTree :node="t"></zoneTree>
+        </md-list-item>
+      </md-list>
+    </div>
+
+    <!-- <div class='mainMenu'>
+      <md-list v-if="zoneForest !=null"
+               class=" md-scrollbar ">
+        <md-list-item class="adjust"
+                      v-for="index in zoneForest.list.length"
+                      :key="zoneForest.list[index-1].title.get()">
+          <zoneTree :node="zoneForest.list[index-1]"></zoneTree>
         </md-list-item>
       </md-list>
     </div> -->
@@ -61,17 +72,6 @@
         </md-list-item>
       </md-list>
     </div> -->
-
-    <div class='mainMenu'>
-      <md-list v-if="zoneForest !=null"
-               class=" md-scrollbar ">
-        <md-list-item class="adjust"
-                      v-for="index in zoneForest.list.length"
-                      :key="zoneForest.list[index-1].title.get()">
-          <zoneTree :node="zoneForest.list[index-1]"></zoneTree>
-        </md-list-item>
-      </md-list>
-    </div>
 
     <!-- <div class='mainMenu'>
 
