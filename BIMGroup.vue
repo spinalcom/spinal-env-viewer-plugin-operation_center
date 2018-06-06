@@ -2,11 +2,11 @@
 <template>
   <div class="BIMGroup"
        v-show="node.display.get()">
-    <md-list v-if="node.BIMGroup.items.length>0">
+    <md-list v-if="node.BIMGroup.BIMObjects.length>0">
       <md-list-item class="adjust  "
-                    v-for="index in node.BIMGroup.items.length"
-                    :key="node.BIMGroup.items[index-1].id.get()">
-        <bim-object :item="node.BIMGroup.items[index-1]"
+                    v-for="index in node.BIMGroup.BIMObjects.length"
+                    :key="node.BIMGroup.BIMObjects[index-1].id.get()">
+        <bim-object :item="node.BIMGroup.BIMObjects[index-1]"
                     :group="node.BIMGroup"></bim-object>
       </md-list-item>
     </md-list>

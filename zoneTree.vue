@@ -128,12 +128,13 @@ export default {
     },
     generateRandomValue: function() {
       if (!this.simulation) {
-        let intervalle = 2;
+        let intervalle = 5;
         this.refreshInterval = setInterval(() => {
           let max = 80;
           let min = 40;
           let newValue = Math.floor((max - min) * Math.random() + min);
           this.node.BIMGroup.currentValue.set(newValue);
+          this.node.BIMGroup.populateTimeSeries();
         }, intervalle * 1000);
         this.grain = "stop";
         this.simulation = true;
@@ -155,7 +156,7 @@ export default {
         // this.hideShowIcon = "keyboard_arrow_right";
       } else if (
         this.node.children.length > 0 ||
-        this.node.BIMGroup.items.length > 0
+        this.node.BIMGroup.BIMObjects.length > 0
       ) {
         this.node.display.set(true);
         // this.hideShowIcon = "keyboard_arrow_down";

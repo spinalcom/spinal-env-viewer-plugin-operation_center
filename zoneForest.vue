@@ -147,30 +147,31 @@ export default {
     },
     onModelChange: function() {
       this.getArray();
+      this.refreshAllColors();
     },
     refreshAllColors: function() {
       // console.log("test");
       if (this.toggleSimulate) {
-        let intervalle = 2;
-        this.refreshInterval = setInterval(() => {
-          // let dbid = [6612];
-          // let color = "#FF0000";
-          // let id = dbid[0];
-          // let m = v.setColorMaterial(dbid, color, id);
+        // let intervalle = 2;
+        // this.refreshInterval = setTimeout(() => {
+        // let dbid = [6612];
+        // let color = "#FF0000";
+        // let id = dbid[0];
+        // let m = v.setColorMaterial(dbid, color, id);
 
-          // m.color.setHex(0x00ff00);
-          let BIMGroups = this.zoneForest.getAllBIMGroups();
-          // console.log(BIMGroups);
-          for (let index = 0; index < BIMGroups.length; index++) {
-            const element = BIMGroups[index];
-            if (element.currentValue.get() !== 0) {
-              element.colorByValue1();
-              this.refreshColors(element, element.color.get());
-            }
+        // m.color.setHex(0x00ff00);
+        let BIMGroups = this.zoneForest.getAllBIMGroups();
+        // console.log(BIMGroups);
+        for (let index = 0; index < BIMGroups.length; index++) {
+          const element = BIMGroups[index];
+          if (element.currentValue.get() !== 0) {
+            element.colorByValue1();
+            this.refreshColors(element, element.color.get());
           }
-        }, intervalle * 1000);
+        }
+        // }, intervalle * 1000);
       } else {
-        clearInterval(this.refreshInterval);
+        // clearInterval(this.refreshInterval);
       }
     },
     refreshColors: function(thing, color) {
@@ -179,18 +180,18 @@ export default {
         var G = this.hexToG(color) / 255;
         var B = this.hexToB(color) / 255;
         var color2 = new THREE.Vector4(R, G, B, 0.5);
-        for (let index = 0; index < thing.items.length; index++) {
-          this.viewer.setThemingColor(thing.items[index].id.get(), color2);
+        for (let index = 0; index < thing.BIMObjects.length; index++) {
+          this.viewer.setThemingColor(thing.BIMObjects[index].id.get(), color2);
         }
       } else {
-        // if (thing.items[0]) {
-        //   var index = this.contains(thing.items[0].id.get());
+        // if (thing.BIMObjects[0]) {
+        //   var index = this.contains(thing.BIMObjects[0].id.get());
         //   if (!index) {
         //     var dbids = [];
         //     var id = dbids[0];
-        //     for (let index = 0; index < thing.items.length; index++) {
-        //       dbids.push(thing.items[index].id.get());
-        //       allDbIds.push(thing.items[index].id.get());
+        //     for (let index = 0; index < thing.BIMObjects.length; index++) {
+        //       dbids.push(thing.BIMObjects[index].id.get());
+        //       allDbIds.push(thing.BIMObjects[index].id.get());
         //       console.log(allDbIds);
         //     }
         //     var m = v.setColorMaterial(dbids, color, id);
@@ -200,9 +201,9 @@ export default {
         //   }
         // }
         let dbids = [];
-        for (let index = 0; index < thing.items.length; index++) {
-          dbids.push(thing.items[index].id.get());
-          allDbIds.push(thing.items[index].id.get());
+        for (let index = 0; index < thing.BIMObjects.length; index++) {
+          dbids.push(thing.BIMObjects[index].id.get());
+          allDbIds.push(thing.BIMObjects[index].id.get());
           // console.log(allDbIds);
         }
         this.viewer.setColorMaterial(dbids, color);

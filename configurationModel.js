@@ -17,6 +17,7 @@ import EventBus from "./EventBus.vue";
 // along with Soda. If not, see <http://www.gnu.org/licenses/>.
 
 const spinalCore = require("spinal-core-connectorjs");
+const BIMForge = require("spinal-models-bim_forge");
 const globalType = typeof window === "undefined" ? global : window;
 
 export class BasicConfigurationNode extends globalType.Model {
@@ -29,7 +30,7 @@ export class BasicConfigurationNode extends globalType.Model {
         children: [],
         display: false,
         type: "",
-        BIMGroup: new SpinalBIMGroup(this),
+        BIMGroup: new SpinalBIMGroupOC(this),
         special: false
       });
     }
@@ -231,37 +232,36 @@ export class ConfigurationModel extends globalType.Model {
   }
 }
 
-var BIMGroupId = 0;
-export class SpinalBIMGroup extends globalType.Model {
-  constructor(_parent, name = "BIMGroup") {
+var SpinalBIMGroupOCId = 0;
+export class SpinalBIMGroupOC extends BIMForge.SpinalBIMGroupForge {
+  constructor(_parent, name = "SpinalBIMGroupOC") {
     super();
-    this.add_attr({
-      display: true,
-      id: BIMGroupId++,
-      title: "",
-      color: "",
-      currentValue: 0,
-      timeSeries: [],
-      items: [],
-      parent: _parent,
-    });
-    this.populateTimeSeries();
+    if (FileSystem._sig_server) {
+      this.add_attr({
+        id: SpinalBIMGroupOCId++,
+        currentValue: 0,
+        timeSeries: [],
+        parent: _parent,
+      });
+      this.populateTimeSeries();
+      this.display.set(true);
+    }
   }
 
   populateTimeSeries() {
     // console.log("test")
     let max = 30;
     let intervalle = 2;
-    setInterval(() => {
-      // console.log(this, this.timeSeries.get())
-      if (this.timeSeries.length >= max) {
-        this.timeSeries.shift();
-        this.timeSeries.push(this.currentValue.get())
+    // setInterval(() => {
+    // console.log(this, this.timeSeries.get())
+    if (this.timeSeries.length >= max) {
+      this.timeSeries.shift();
+      this.timeSeries.push(this.currentValue.get())
 
-      } else {
-        this.timeSeries.push(this.currentValue.get())
-      }
-    }, intervalle * 1000);
+    } else {
+      this.timeSeries.push(this.currentValue.get())
+    }
+    // }, intervalle * 1000);
   }
 
   contains(itemId) {
@@ -270,9 +270,9 @@ export class SpinalBIMGroup extends globalType.Model {
 
   addItem(itemId) {
     if (!this.contains(itemId)) {
-      let newBIMObject = new SpinalBIMObject(itemId, this.id.get());
+      let newBIMObject = new SpinalBIMObjectOC(itemId, this.id.get());
       newBIMObject.fillInfo().then(() => {
-        this.items.push(newBIMObject);
+        this.BIMObjects.push(newBIMObject);
       });
     }
   }
@@ -280,35 +280,35 @@ export class SpinalBIMGroup extends globalType.Model {
 
 
   addItems(input) {
-    // input is a list of items to add
+    // input is a list of BIMObjects to add
     input.forEach(i => {
-      if (this.items.indexOf(i) === -1) {
-        this.items.push(i);
+      if (this.BIMObjects.indexOf(i) === -1) {
+        this.BIMObjects.push(i);
       }
     });
   }
 
   removeItems(input) {
-    // input is a list of items to be removed
+    // input is a list of BIMObjects to be removed
     var removedItems = [];
     for (var i = 0; i < input.length; ++i) {
-      var index = this.items.indexOf(input[i]);
+      var index = this.BIMObjects.indexOf(input[i]);
       if (index !== -1) {
-        removedItems.push(this.items[index].get());
-        this.items.splice(index, 1);
+        removedItems.push(this.BIMObjects[index].get());
+        this.BIMObjects.splice(index, 1);
       }
     }
     return removedItems;
   }
 
-  setDisplay(display) {
-    this.display.set(display);
-  }
+  // setDisplay(display) {
+  //   this.display.set(display);
+  // }
 
   arrayOfId() {
     let t = [];
-    for (let i = 0; i < this.items.length; i++) {
-      const item = this.items[i];
+    for (let i = 0; i < this.BIMObjects.length; i++) {
+      const item = this.BIMObjects[i];
       t.push(item.id.get());
     }
     return t;
@@ -463,34 +463,34 @@ export class SpinalBIMGroup extends globalType.Model {
   }
 }
 
-export class SpinalBIMObject extends globalType.Model {
-  constructor(itemId, groupId, name = "BIMObject") {
+export class SpinalBIMObjectOC extends BIMForge.SpinalBIMObjectForge {
+  constructor(itemId, groupId, name = "SpinalBIMObjectOC") {
     super();
-    this.add_attr({
-      display: true,
-      id: itemId,
-      title: "",
-      color: "",
-      groupId: groupId
-    });
+    if (FileSystem._sig_server) {
+      this.add_attr({
+        groupId: groupId
+      });
+      this.id.set(itemId);
+      this.display.set(true);
+    }
   }
 
-  setDisplay(display) {
-    this.display.set(display);
-  }
+  // setDisplay(display) {
+  //   this.display.set(display);
+  // }
 
-  getDisplay() {
-    this.display.get();
-  }
+  // getDisplay() {
+  //   this.display.get();
+  // }
 
-  setColor(color) {
-    this.color.set(color);
-  }
+  // setColor(color) {
+  //   this.color.set(color);
+  // }
 
   fillInfo() {
     return new Promise((resolve, reject) => {
       globalType.v.getProperties(this.id.get(), r => {
-        this.title.set(r.name);
+        this.name.set(r.name);
         resolve();
       });
     });
@@ -506,6 +506,6 @@ spinalCore.register_models([BasicConfigurationNode,
   ConfigurationModel,
   ConfigurationNode,
   ConfigurationRoot,
-  SpinalBIMObject,
-  SpinalBIMGroup
+  SpinalBIMObjectOC,
+  SpinalBIMGroupOC
 ])

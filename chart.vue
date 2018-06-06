@@ -20,8 +20,8 @@ export default {
       spinalSystem: window.spinalSystem,
       ctx: null,
       chart1: {},
-      self: null,
-      refreshInterval: null
+      self: null
+      // refreshInterval: null
     };
   },
   components: {},
@@ -103,17 +103,21 @@ export default {
       });
     },
     refresh: function() {
-      let intervalle = 2;
-      this.refreshInterval = setInterval(() => {
-        if (this.self !== null) {
-          // let newValue = this.generateRandomValue();
-          // this.chart1.data.datasets[0].data[2] = newValue;
-          // this.removeData();
-          // this.addData("", this.self.BIMGroup.timeSeries[29].get());
-          this.chart1.data.datasets[0].data = this.self.BIMGroup.timeSeries.get();
-          this.chart1.update();
-        }
-      }, intervalle * 1000);
+      // console.log("test");
+
+      this.chart1.data.datasets[0].data = this.self.BIMGroup.timeSeries.get();
+      this.chart1.update();
+      // let intervalle = 2;
+      // this.refreshInterval = setInterval(() => {
+      //   if (this.self !== null) {
+      //     // let newValue = this.generateRandomValue();
+      //     // this.chart1.data.datasets[0].data[2] = newValue;
+      //     // this.removeData();
+      //     // this.addData("", this.self.BIMGroup.timeSeries[29].get());
+      //     this.chart1.data.datasets[0].data = this.self.BIMGroup.timeSeries.get();
+      //     this.chart1.update();
+      //   }
+      // }, intervalle * 1000);
     },
     getEvents: function() {
       EventBus.$on("zoneTreeContext", _self => {
@@ -121,26 +125,29 @@ export default {
         this.chart1.data.datasets[0].data = this.self.BIMGroup.timeSeries.get();
         this.chart1.data.datasets[0].label = this.self.title.get();
         this.chart1.update();
-        if (this.refreshInterval === null) this.refresh();
+        this.self.BIMGroup.bind(this.refresh);
+        // if (this.refreshInterval === null) this.refresh();
       });
       EventBus.$on("removeZone", _self => {
         // console.log(_self);
         if (this.self === _self) {
-          console.log("test");
-          if (this.refreshInterval !== null) {
-            clearInterval(this.refreshInterval);
-            this.refreshInterval = null;
-            this.chart1.data.datasets[0].label = "Select a Zone";
-            this.chart1.update();
-          }
+          // console.log("test");
+          // if (this.refreshInterval !== null) {
+          //   clearInterval(this.refreshInterval);
+          //   this.refreshInterval = null;
+          this.chart1.data.datasets[0].label = "Select a Zone";
+          this.chart1.update();
         }
+        // }
       });
     },
-    linkToDB: function() {}
+    linkToDB: function() {
+      if (this.self != null) this.self.BIMGroup.bind(this.refresh);
+    }
   },
 
   mounted() {
-    this.linkToDB(), this.getEvents(), this.initialize(), this.refresh();
+    this.linkToDB(), this.getEvents(), this.initialize();
   }
 };
 </script>

@@ -12,7 +12,7 @@
         </md-button>
 
         <div class="md-list-item-text">
-          <span>{{item.title.get()}}</span>
+          <span>{{item.name.get()}}</span>
         </div>
 
         <div class="md-list-item-text">
@@ -63,7 +63,7 @@ export default {
       this.viewer.clearThemingColors();
       if (
         this.group.parent.children.length == 0 &&
-        this.group.items.length == 0
+        this.group.BIMObjects.length == 0
       )
         this.group.parent.display.set(false);
     }
