@@ -93,6 +93,7 @@ export default {
     remove: function() {
       EventBus.$emit("removeZone", this.self);
       if (this.self) {
+        this.viewer.restoreColorMaterial(this.self.getItems());
         if (this.self.isRoot()) this.removeRoot();
         else {
           let parent = this.self.parent;
@@ -102,7 +103,6 @@ export default {
         }
         this.self = null;
         this.title = "select a zone";
-        this.viewer.restoreColorMaterial(this.self.getItems());
       }
     },
     removeRoot: function() {
