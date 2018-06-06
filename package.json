@@ -37,7 +37,8 @@
   "browserify": {
     "transform": [
       "vueify",
-      "babelify"
+      "babelify",
+      "imgurify"
     ]
   },
   "dependencies": {

@@ -5,12 +5,16 @@
             width="500"
             height="400"></canvas>
 
+    <center>
+      <img :src="image" />
+    </center>
+
   </div>
 </template>
 
 <script>
 const globalType = typeof window === "undefined" ? global : window;
-
+import image from "./spe.png";
 import EventBus from "./EventBus.vue";
 import Chart from "chart.js";
 export default {
@@ -20,8 +24,9 @@ export default {
       spinalSystem: window.spinalSystem,
       ctx: null,
       chart1: {},
-      self: null
+      self: null,
       // refreshInterval: null
+      image: image
     };
   },
   components: {},

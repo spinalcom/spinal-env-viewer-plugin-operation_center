@@ -89,8 +89,8 @@
         {{ value }}
       </li>
     </ul> -->
-
   </div>
+
 </template>
 
 <script>
@@ -102,7 +102,7 @@ import BIMObjectManager from "./BIMObjectManager.vue";
 import sharedToolBar from "./sharedToolBar.vue";
 import { ConfigurationModel, Forest } from "./configurationModel";
 var allDbIds = [];
-// import select from "./select";
+import select from "./select";
 import swt from "./SelectionWindowTool";
 
 export default {
