@@ -258,6 +258,7 @@ export default {
             element.BIMGroup.currentValue.set(
               this.simulationModel.temperature[index].get() / 1000 + offset
             );
+            element.BIMGroup.populateTimeSeries();
             offset = 0;
           }
         }

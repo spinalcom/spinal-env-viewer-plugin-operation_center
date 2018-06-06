@@ -248,6 +248,15 @@ export class SpinalBIMGroupOC extends BIMForge.SpinalBIMGroupForge {
     }
   }
 
+  // initialize() {
+  //   let max = 30;
+  //   for (let index = 0; index < 30; index++) {
+  //     const element = timeSeries[index];
+
+
+  //   }
+  // }
+
   populateTimeSeries() {
     // console.log("test")
     let max = 30;
