@@ -164,7 +164,7 @@ export default {
         // console.log(BIMGroups);
         for (let index = 0; index < BIMGroups.length; index++) {
           const element = BIMGroups[index];
-          if (element.currentValue.get() !== 0) {
+          if (element.currentValue.get() !== 0 && element.display.get()) {
             element.colorByValue1();
             this.refreshColors(element, element.color.get());
           }

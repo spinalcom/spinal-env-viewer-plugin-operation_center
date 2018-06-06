@@ -102,6 +102,7 @@ export default {
         }
         this.self = null;
         this.title = "select a zone";
+        this.viewer.restoreColorMaterial(this.self.getItems());
       }
     },
     removeRoot: function() {
@@ -139,12 +140,25 @@ export default {
     },
     isolate() {
       if (this.self) {
-        this.self.BIMGroup.isolate();
+        // this.self.BIMGroup.isolate();
         // console.log("done");
+        let t = this.self.getAllBIMGroups();
+        for (let index = 0; index < t.length; index++) {
+          const element = t[index];
+          element.display.set(false);
+        }
+        // this.self.BIMGroup.display.set(false);
+        this.viewer.restoreColorMaterial(this.self.getItems());
       }
     },
     showAll() {
-      globalType.v.showAll();
+      // globalType.v.showAll();
+      let t = this.self.getAllBIMGroups();
+      for (let index = 0; index < t.length; index++) {
+        const element = t[index];
+        element.display.set(true);
+      }
+      // this.self.BIMGroup.display.set(true);
     }
   },
   // computed: {
