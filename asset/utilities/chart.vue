@@ -14,7 +14,7 @@
 
 <script>
 const globalType = typeof window === "undefined" ? global : window;
-import image from "./spe.png";
+import image from "../images/spe.png";
 import EventBus from "./EventBus.vue";
 import Chart from "chart.js";
 export default {

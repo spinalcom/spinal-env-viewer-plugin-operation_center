@@ -32,29 +32,14 @@
           </md-button>
 
           <md-button class="md-icon-button"
-                     @click="isolate()">
-            <md-icon>visibility_off</md-icon>
+                     @click="displayColor()">
+            <md-icon>{{icon}}</md-icon>
           </md-button>
 
-          <md-button class="md-icon-button"
+          <!-- <md-button class="md-icon-button"
                      @click="showAll()">
             <md-icon>visibility</md-icon>
-          </md-button>
-
-          <!-- <md-menu md-close-on-select
-                   md-direction="bottom-start">
-            <md-button md-menu-trigger
-                       class="md-icon-button"
-                       @click="onEditType()">
-              <md-icon>mode_edit</md-icon>
-            </md-button>
-
-            <md-select v-model="firstDayOfAWeek">
-              <md-option value="0">Sunday</md-option>
-              <md-option value="1">Monday</md-option>
-            </md-select>
-
-          </md-menu> -->
+          </md-button> -->
 
         </md-list-item>
       </md-list>
@@ -64,12 +49,12 @@
 </template>
 
 <script>
-import DialogPrompt from "./dialogPrompt.vue";
-import EventBus from "./EventBus.vue";
+import DialogPrompt from "../asset/utilities/dialogPrompt.vue";
+import EventBus from "../asset/utilities/EventBus.vue";
 import {
   SpinalBIMGroup as BIMGroup,
   SpinalBIMObject as BIMObject
-} from "./configurationModel.js";
+} from "../models/ConfigurationModel.js";
 let globalType = window ? window : global;
 export default {
   name: "sharedToolBar",
@@ -80,7 +65,8 @@ export default {
       prompt: false,
       preSelected: null,
       disableSelection: false,
-      viewer: globalType.v
+      viewer: globalType.v,
+      icon: "visibility_off"
     };
   },
   components: {
@@ -118,6 +104,9 @@ export default {
         this.preSelected = _self;
         this.self = _self.node;
         this.title = this.getTitle();
+        this.icon = this.self.BIMGroup.display.get()
+          ? "visibility"
+          : "visibility_off";
       });
     },
     getTitle: function() {
@@ -126,7 +115,6 @@ export default {
     onEditTitle: function() {
       if (this.self) this.prompt = true;
     },
-    onEditType: function() {},
     getSelected: function() {
       //TODO check if a leaf of the autodesk tree
       let selected = this.viewer.getSelection();
@@ -138,39 +126,19 @@ export default {
         }
       }
     },
-    isolate() {
+    displayColor() {
       if (this.self) {
-        // this.self.BIMGroup.isolate();
-        // console.log("done");
-        let t = this.self.getAllBIMGroups();
-        for (let index = 0; index < t.length; index++) {
-          const element = t[index];
-          element.display.set(false);
+        if (this.self.BIMGroup.display.get()) {
+          this.self.setAllDisplays(false); //the element included
+          this.icon = "visibility_off";
+          this.viewer.restoreColorMaterial(this.self.getItems());
+        } else {
+          this.self.setAllDisplays(true);
+          this.icon = "visibility";
         }
-        // this.self.BIMGroup.display.set(false);
-        this.viewer.restoreColorMaterial(this.self.getItems());
       }
-    },
-    showAll() {
-      // globalType.v.showAll();
-      let t = this.self.getAllBIMGroups();
-      for (let index = 0; index < t.length; index++) {
-        const element = t[index];
-        element.display.set(true);
-      }
-      // this.self.BIMGroup.display.set(true);
     }
   },
-  // computed: {
-  //   firstDayOfAWeek: {
-  //     get() {
-  //       return this.$material.locale.firstDayOfAWeek;
-  //     },
-  //     set(val) {
-  //       this.$material.locale.firstDayOfAWeek = val;
-  //     }
-  //   }
-  // },
   mounted() {
     this.getEvents();
   }

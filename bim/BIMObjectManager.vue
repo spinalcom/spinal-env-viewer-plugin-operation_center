@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import EventBus from "./EventBus.vue";
+import EventBus from "../asset/utilities/EventBus.vue";
 export default {
   name: "BIMObjectManager",
   data() {

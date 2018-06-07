@@ -81,10 +81,10 @@
 
 <script>
 let globalType = typeof window === "undefined" ? global : window;
-import DialogPrompt from "./dialogPrompt.vue";
+import DialogPrompt from "../asset/utilities/dialogPrompt.vue";
 import zoneTree from "./zoneTree.vue";
-import EventBus from "./EventBus.vue";
-import BIMGroup from "./BIMGroup.vue";
+import EventBus from "../asset/utilities/EventBus.vue";
+import BIMGroup from "../bim/BIMGroup.vue";
 export default {
   name: "zoneTree",
   data() {
@@ -179,13 +179,13 @@ export default {
 
 <style scoped>
 .zoneTree {
-  height: calc(100% - 10px);
-  width: calc(100% - 10px);
+  width: 100%;
   max-width: 100%;
   display: inline-block;
   vertical-align: top;
   overflow: auto;
   border: 1px solid rgba(0, 0, 0, 0.12);
+  border-right-width: 0px;
 }
 </style>
 
