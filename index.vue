@@ -1,7 +1,7 @@
 <script>
 import Vue from "vue";
 import zoneForest from "./physical_zones/zoneForest.vue";
-import chart from "./asset/utilities/chart.vue";
+import chart from "./assets/utilities/chart.vue";
 const ComponentCtor1 = Vue.extend(zoneForest);
 const ComponentCtor2 = Vue.extend(chart);
 const ClassName = "Configuration";

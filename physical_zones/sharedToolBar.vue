@@ -49,12 +49,8 @@
 </template>
 
 <script>
-import DialogPrompt from "../asset/utilities/dialogPrompt.vue";
-import EventBus from "../asset/utilities/EventBus.vue";
-import {
-  SpinalBIMGroup as BIMGroup,
-  SpinalBIMObject as BIMObject
-} from "../models/ConfigurationModel.js";
+import DialogPrompt from "../assets/utilities/dialogPrompt.vue";
+import EventBus from "../assets/utilities/EventBus.vue";
 let globalType = window ? window : global;
 export default {
   name: "sharedToolBar",

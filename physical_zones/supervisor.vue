@@ -12,7 +12,7 @@ const globalType = typeof window === "undefined" ? global : window;
 const spinalSystem = globalType.spinal.spinalSystem;
 var viewer;
 
-import EventBus from "../asset/utilities/EventBus.vue";
+import EventBus from "../assets/utilities/EventBus.vue";
 export default {
   name: "supervisor",
   data() {

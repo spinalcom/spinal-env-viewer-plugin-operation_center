@@ -58,7 +58,7 @@
 const globalType = typeof window === "undefined" ? global : window;
 
 import networkTree from "./networkTree.vue";
-import EventBus from "../asset/utilities/EventBus.vue";
+import EventBus from "../assets/utilities/EventBus.vue";
 import { Forest as networkForest } from "../models/configurationModel";
 export default {
   name: "networkForest",

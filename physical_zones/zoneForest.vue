@@ -58,11 +58,11 @@ const globalType = typeof window === "undefined" ? global : window;
 const spinalSystem = globalType.spinal.spinalSystem;
 var viewer = globalType.v;
 import zoneTree from "./zoneTree.vue";
-import EventBus from "../asset/utilities/EventBus.vue";
+import EventBus from "../assets/utilities/EventBus.vue";
 import BIMObjectManager from "../bim/BIMObjectManager.vue";
 import sharedToolBar from "./sharedToolBar.vue";
 import supervisor from "./supervisor.vue";
-import { ConfigurationModel } from "../models/ConfigurationModel";
+import { OperationCenter } from "spinal-models-operation_center";
 import select from "../selection/select";
 import swt from "../selection/SelectionWindowTool";
 
@@ -119,16 +119,22 @@ export default {
     linkToDB: function() {
       spinalSystem.getModel().then(forgefile => {
         if (forgefile) {
-          if (forgefile.configurationModel) {
-            forgefile.configurationModel.load(model => {
-              this.zoneForest = model.zoneForest;
-              this.zoneForest.bind(this.onModelChange);
+          if (forgefile.operationCenter) {
+            forgefile.operationCenter.load(model => {
+              model.zoneForest.load(zf => {
+                this.zoneForest = zf;
+                this.zoneForest.bind(this.onModelChange);
+              });
             });
           } else {
-            let configurationModel = new ConfigurationModel();
-            this.zoneForest = configurationModel.zoneForest;
+            let operationCenter = new OperationCenter();
+            console.log(operationCenter);
+            operationCenter.zoneForest.load(zf => {
+              this.zoneForest = zf;
+              console.log(zf);
+            });
             forgefile.add_attr({
-              configurationModel: new Ptr(configurationModel)
+              operationCenter: new Ptr(operationCenter)
             });
             this.zoneForest.bind(this.onModelChange);
           }

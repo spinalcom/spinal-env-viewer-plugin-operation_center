@@ -33,7 +33,7 @@
 
 <script>
 let globalType = typeof window === "undefined" ? global : window;
-import EventBus from "../asset/utilities/EventBus.vue";
+import EventBus from "../assets/utilities/EventBus.vue";
 export default {
   name: "BIMObject",
   data() {
