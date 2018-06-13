@@ -51,7 +51,9 @@
 <script>
 import DialogPrompt from "../assets/utilities/dialogPrompt.vue";
 import EventBus from "../assets/utilities/EventBus.vue";
-let globalType = window ? window : global;
+var globalType;
+var spinalSystem;
+var viewer;
 export default {
   name: "sharedToolBar",
   data() {
@@ -61,7 +63,6 @@ export default {
       prompt: false,
       preSelected: null,
       disableSelection: false,
-      viewer: globalType.v,
       icon: "visibility_off"
     };
   },
@@ -75,16 +76,20 @@ export default {
     remove: function() {
       EventBus.$emit("removeZone", this.self);
       if (this.self) {
-        this.viewer.restoreColorMaterial(this.self.getItems());
-        if (this.self.isRoot()) this.removeRoot();
-        else {
-          let parent = this.self.parent;
-          this.self.remove();
-          if (parent.children.length == 0 && parent.BIMGroup.items.length == 0)
-            parent.display.set(false);
+        viewer.restoreColorMaterial(this.self.getItems());
+        if (this.self.isRoot()) {
+          this.removeRoot();
+          this.self = null;
+          this.title = "select a zone";
+        } else {
+          this.self.parent.load(p => {
+            let parent = p;
+            this.self.remove();
+            parent.updateShowContent();
+            this.self = null;
+            this.title = "select a zone";
+          });
         }
-        this.self = null;
-        this.title = "select a zone";
       }
     },
     removeRoot: function() {
@@ -96,9 +101,13 @@ export default {
     },
     getEvents: function() {
       EventBus.$on("zoneTreeContext", _self => {
-        if (this.preSelected) this.preSelected.deselect();
-        this.preSelected = _self;
-        this.self = _self.node;
+        if (typeof _self.node == "undefined") {
+          this.self = _self;
+        } else {
+          if (this.preSelected) this.preSelected.deselect();
+          this.preSelected = _self;
+          this.self = _self.node;
+        }
         this.title = this.getTitle();
         this.icon = this.self.BIMGroup.display.get()
           ? "visibility"
@@ -113,12 +122,12 @@ export default {
     },
     getSelected: function() {
       //TODO check if a leaf of the autodesk tree
-      let selected = this.viewer.getSelection();
+      let selected = viewer.getSelection();
       for (let i = 0; i < selected.length; i++) {
         const itemId = selected[i];
-        if (this.self) {
+        if (this.self != null) {
           this.self.BIMGroup.addItem(itemId);
-          this.self.display.set(true);
+          this.self.updateShowContent(true);
         }
       }
     },
@@ -127,7 +136,7 @@ export default {
         if (this.self.BIMGroup.display.get()) {
           this.self.setAllDisplays(false); //the element included
           this.icon = "visibility_off";
-          this.viewer.restoreColorMaterial(this.self.getItems());
+          viewer.restoreColorMaterial(this.self.getItems());
         } else {
           this.self.setAllDisplays(true);
           this.icon = "visibility";
@@ -136,6 +145,9 @@ export default {
     }
   },
   mounted() {
+    globalType = typeof window === "undefined" ? global : window;
+    spinalSystem = globalType.spinal.spinalSystem;
+    viewer = globalType.v;
     this.getEvents();
   }
 };

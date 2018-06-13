@@ -32,7 +32,8 @@
 </template>
 
 <script>
-let globalType = typeof window === "undefined" ? global : window;
+var globalType = typeof window === "undefined" ? global : window;
+var spinalSystem;
 import EventBus from "../assets/utilities/EventBus.vue";
 export default {
   name: "BIMObject",
@@ -61,14 +62,12 @@ export default {
     onDelete: function() {
       this.group.removeItems([this.item]);
       this.viewer.clearThemingColors();
-      if (
-        this.group.parent.children.length == 0 &&
-        this.group.BIMObjects.length == 0
-      )
-        this.group.parent.display.set(false);
+      this.group.parent.updateShowContent();
     }
   },
-  mounted() {}
+  mounted() {
+    spinalSystem = globalType.spinal.spinalSystem;
+  }
 };
 </script>
 

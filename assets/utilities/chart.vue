@@ -126,7 +126,11 @@ export default {
     },
     getEvents: function() {
       EventBus.$on("zoneTreeContext", _self => {
-        this.self = _self.node;
+        if (typeof _self.node == "undefined") {
+          this.self = _self;
+        } else {
+          this.self = _self.node;
+        }
         this.chart1.data.datasets[0].data = this.self.BIMGroup.timeSeries.get();
         this.chart1.data.datasets[0].label = this.self.title.get();
         this.chart1.update();
