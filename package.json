@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "imgurify": "^2.0.1",
-    "spinal-models-operation_center": "git+https://github.com/spinalcom/spinal-models-operation_center.git"
+    "spinal-models-operation_center": "git+https://github.com/spinalcom/spinal-models-operation_center.git",
+    "vuedraggable": "^2.16.0"
   }
 }
