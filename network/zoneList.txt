@@ -1,0 +1,11 @@
+#1 = Zone(Zone 1, Zone-098a2cac-0a71-c65c-8d7a-985dda3b4482-164641685ec, SpinalBIMGroupOC-da2ea851-2362-6fc0-adb9-c599fda12a57-164641685ed, Zone);
+#2 = Zone( Equipement-1, Zone-f7daed31-006e-f8d3-96a6-9586ae84625b-164641697eb, SpinalBIMGroupOC-c1f00714-a34e-17d6-e46b-b880d3f45502-164641697eb, Equipement);
+#3 = Zone( Equipement-2, Zone-2616d7f3-d770-fc1e-4316-aeac0a50305c-16464169f1c, SpinalBIMGroupOC-214dd4d7-a6c2-fa8f-7113-03b36de5c279-16464169f1d, Equipement);
+#4 = Zone( Equipement-3, Zone-74263671-4f4d-364a-6aed-2015c7dd8a41-1646416a594, SpinalBIMGroupOC-ffc5e846-3678-31df-7084-c32ff8e7990b-1646416a595, Equipement);
+#5 = Zone(Zone 1-1, Zone-2d3997c9-ef1a-ed1b-11f0-72aef4850633-1646416b04d, SpinalBIMGroupOC-228c26c9-cc6b-d9f8-6afa-67929a205abd-1646416b04d, Zone);
+#6 = RelZoneAggregates(RelZoneAggregates-33024db0-a2bd-a37e-a076-7a101113f265-164641685f0,#0,(#1));
+#7 = RelZoneAggregates(RelZoneAggregates-98b7c43f-2592-8d1e-e24d-c56f64d3389c-164641697ed,#1,(#2,#5));
+#8 = RelZoneAggregates(RelZoneAggregates-0fd07a13-512c-5c40-302a-99fe745111eb-16464169f1e,#2,(#3));
+#9 = RelZoneAggregates(RelZoneAggregates-fbe9ee99-f467-d99a-be06-cae749ef584a-1646416a595,#3,(#4));
+
+

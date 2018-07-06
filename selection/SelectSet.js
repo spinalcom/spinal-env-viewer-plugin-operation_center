@@ -75,7 +75,6 @@ export default class SelectSet {
   /////////////////////////////////////////////////////////
   async getComponentBoundingBox(model, dbId) {
 
-    console.log(Toolkit);
     const fragIds = await Toolkit.getFragIds(
       model, dbId)
 

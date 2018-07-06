@@ -25,7 +25,6 @@ export default {
       var toSend = this.value;
       this.value = "";
       EventBus.$emit("promptValue", toSend);
-      console.log("test", this.oldTitle);
     },
     cancelEvent: function() {
       this.value = "";

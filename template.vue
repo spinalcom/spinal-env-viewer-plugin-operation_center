@@ -1,7 +1,7 @@
 
 <template>
-  <div class="supervisor">
-  </div>
+  <md-content class="supervisor">
+  </md-content>
 </template>
 
 <script>

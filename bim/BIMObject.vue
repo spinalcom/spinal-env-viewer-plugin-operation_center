@@ -45,7 +45,7 @@ export default {
       viewer: globalType.v
     };
   },
-  props: ["item", "group"],
+  props: ["item", "node"],
   components: {},
   methods: {
     select: function() {
@@ -60,9 +60,9 @@ export default {
       this.isSelected = false;
     },
     onDelete: function() {
-      this.group.removeItems([this.item]);
+      this.node.element.BIMGroup.removeItems([this.item]);
       this.viewer.clearThemingColors();
-      this.group.parent.updateShowContent();
+      this.node.updateShowContent();
     }
   },
   mounted() {

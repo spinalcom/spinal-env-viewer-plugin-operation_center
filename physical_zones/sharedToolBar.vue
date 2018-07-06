@@ -4,16 +4,16 @@
     <div class="viewport">
 
       <md-dialog-prompt :md-active.sync="prompt"
-                        v-model="title"
-                        md-title="New Title"
+                        v-model="name"
+                        md-name="New Name"
                         md-input-maxlength="200"
                         md-confirm-text="Change"
-                        @md-confirm="changeTitle()" />
+                        @md-confirm="changeName()" />
 
       <md-list>
         <md-list-item>
           <div class="md-list-item-text">
-            <span>{{getTitle()}}</span>
+            <span>{{getName()}}</span>
           </div>
 
           <md-button class="md-icon-button"
@@ -22,7 +22,7 @@
           </md-button>
 
           <md-button class="md-icon-button"
-                     @click="onEditTitle()">
+                     @click="onEditName()">
             <md-icon>edit</md-icon>
           </md-button>
 
@@ -59,7 +59,7 @@ export default {
   data() {
     return {
       self: null,
-      title: "select a zone",
+      name: "select a zone",
       prompt: false,
       preSelected: null,
       disableSelection: false,
@@ -80,14 +80,14 @@ export default {
         if (this.self.isRoot()) {
           this.removeRoot();
           this.self = null;
-          this.title = "select a zone";
+          this.name = "select a zone";
         } else {
           this.self.parent.load(p => {
             let parent = p;
             this.self.remove();
             parent.updateShowContent();
             this.self = null;
-            this.title = "select a zone";
+            this.name = "select a zone";
           });
         }
       }
@@ -95,12 +95,12 @@ export default {
     removeRoot: function() {
       EventBus.$emit("removeRoot", this.self);
     },
-    changeTitle: function() {
-      if (this.self.title) this.self.title.set(this.title);
+    changeName: function() {
+      if (this.self.element.name) this.self.element.name.set(this.name);
       prompt: false;
     },
     getEvents: function() {
-      EventBus.$on("zoneTreeContext", _self => {
+      EventBus.$on("zoneContext", _self => {
         if (typeof _self.node == "undefined") {
           this.self = _self;
         } else {
@@ -108,16 +108,29 @@ export default {
           this.preSelected = _self;
           this.self = _self.node;
         }
-        this.title = this.getTitle();
-        this.icon = this.self.BIMGroup.display.get()
+        this.name = this.getName();
+        this.icon = this.self.element.BIMGroup.display.get()
+          ? "visibility"
+          : "visibility_off";
+      });
+      EventBus.$on("equipementContext", _self => {
+        if (typeof _self.node == "undefined") {
+          this.self = _self;
+        } else {
+          if (this.preSelected) this.preSelected.deselect();
+          this.preSelected = _self;
+          this.self = _self.node;
+        }
+        this.name = this.getName();
+        this.icon = this.self.element.BIMGroup.display.get()
           ? "visibility"
           : "visibility_off";
       });
     },
-    getTitle: function() {
-      return this.self ? this.self.title.get() : this.title;
+    getName: function() {
+      return this.self ? this.self.element.name.get() : this.name;
     },
-    onEditTitle: function() {
+    onEditName: function() {
       if (this.self) this.prompt = true;
     },
     getSelected: function() {
@@ -126,14 +139,14 @@ export default {
       for (let i = 0; i < selected.length; i++) {
         const itemId = selected[i];
         if (this.self != null) {
-          this.self.BIMGroup.addItem(itemId);
+          this.self.element.BIMGroup.addItem(itemId);
           this.self.updateShowContent(true);
         }
       }
     },
     displayColor() {
       if (this.self) {
-        if (this.self.BIMGroup.display.get()) {
+        if (this.self.element.BIMGroup.display.get()) {
           this.self.setAllDisplays(false); //the element included
           this.icon = "visibility_off";
           viewer.restoreColorMaterial(this.self.getItems());

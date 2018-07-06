@@ -21,7 +21,7 @@ export default {
   name: "supervisor",
   data() {
     return {
-      link: "settings_input_antenna",
+      icon: "settings_input_antenna",
       timeSeriesPanel: null
     };
   },
@@ -42,13 +42,13 @@ export default {
       if (this.relOptions != null) {
         if (this.relOptions.simulationMode.get()) {
           this.relOptions.simulationMode.set(false);
-          this.link = "settings_input_antenna";
+          this.icon = "settings_input_antenna";
           this.zoneForest.restoreColorMaterial();
           this.zoneForest.disactivateAllBIMGroups();
           this.timeSeriesPanel.setVisible(false);
         } else {
           this.relOptions.simulationMode.set(true);
-          this.link = "stop";
+          this.icon = "stop";
           this.zoneForest.activateAllBIMGroups();
           this.timeSeriesPanel.setVisible(true);
         }
@@ -62,7 +62,9 @@ export default {
         this.timeSeriesPanel.container.id + "-pannelcontainer";
       _container.style.height = "calc(100% - 45px)";
       _container.style.overflowY = "auto";
-      this.timeSeriesPanel.container.style.left = "calc(100vw - 450px)";
+      this.timeSeriesPanel.container.style.left = "calc(100vw - 35%)";
+      // this.timeSeriesPanel.container.style.left = "100%-400px";
+      this.timeSeriesPanel.container.style.top = "300px";
       this.timeSeriesPanel.container.appendChild(_container);
       new timeSeriesPanelComponentCtor().$mount(_container);
     },
@@ -77,8 +79,7 @@ export default {
         this.timeSeriesPanel.setVisible(true);
       else this.timeSeriesPanel.setVisible(false);
     },
-    getEvents: function() {},
-    linkToDB: function() {}
+    getEvents: function() {}
   },
   mounted() {
     viewer = globalType.v;
@@ -98,13 +99,13 @@ export default {
         this.relOptions != null &&
         typeof this.relOptions.simulationMode !== "undefined"
       ) {
-        this.link = this.relOptions.simulationMode.get()
+        this.icon = this.relOptions.simulationMode.get()
           ? "stop"
           : "settings_input_antenna";
-        return this.link;
+        return this.icon;
       } else {
-        this.link = "settings_input_antenna";
-        return this.link;
+        this.icon = "settings_input_antenna";
+        return this.icon;
       }
     }
   }

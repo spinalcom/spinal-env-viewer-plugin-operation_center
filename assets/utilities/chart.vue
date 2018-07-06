@@ -110,7 +110,7 @@ export default {
     refresh: function() {
       // console.log("test");
 
-      this.chart1.data.datasets[0].data = this.self.BIMGroup.timeSeries.get();
+      this.chart1.data.datasets[0].data = this.self.element.BIMGroup.timeSeries.get();
       this.chart1.update();
       // let intervalle = 2;
       // this.refreshInterval = setInterval(() => {
@@ -118,23 +118,23 @@ export default {
       //     // let newValue = this.generateRandomValue();
       //     // this.chart1.data.datasets[0].data[2] = newValue;
       //     // this.removeData();
-      //     // this.addData("", this.self.BIMGroup.timeSeries[29].get());
-      //     this.chart1.data.datasets[0].data = this.self.BIMGroup.timeSeries.get();
+      //     // this.addData("", this.self.element.BIMGroup.timeSeries[29].get());
+      //     this.chart1.data.datasets[0].data = this.self.element.BIMGroup.timeSeries.get();
       //     this.chart1.update();
       //   }
       // }, intervalle * 1000);
     },
     getEvents: function() {
-      EventBus.$on("zoneTreeContext", _self => {
+      EventBus.$on("zoneContext", _self => {
         if (typeof _self.node == "undefined") {
           this.self = _self;
         } else {
           this.self = _self.node;
         }
-        this.chart1.data.datasets[0].data = this.self.BIMGroup.timeSeries.get();
-        this.chart1.data.datasets[0].label = this.self.title.get();
+        this.chart1.data.datasets[0].data = this.self.element.BIMGroup.timeSeries.get();
+        this.chart1.data.datasets[0].label = this.self.element.name.get();
         this.chart1.update();
-        this.self.BIMGroup.bind(this.refresh);
+        this.self.element.BIMGroup.bind(this.refresh);
         // if (this.refreshInterval === null) this.refresh();
       });
       EventBus.$on("removeZone", _self => {
@@ -151,7 +151,7 @@ export default {
       });
     },
     linkToDB: function() {
-      if (this.self != null) this.self.BIMGroup.bind(this.refresh);
+      if (this.self != null) this.self.element.BIMGroup.bind(this.refresh);
     }
   },
 

@@ -1,20 +1,24 @@
 <script>
 import Vue from "vue";
-import zoneForest from "./physical_zones/zoneForest.vue";
-import chart from "./assets/utilities/chart.vue";
-const ComponentCtor1 = Vue.extend(zoneForest);
-const ComponentCtor2 = Vue.extend(chart);
+import { PanelManager } from "spinal-models-operation_center";
+
+import zoneManager from "./physical_zones/zoneManager.vue";
+import networkManager from "./network/networkManager.vue";
+import EventBus from "./assets/utilities/EventBus.vue";
+import panelButton from "./panelButton.vue";
+const ComponentCtor1 = Vue.extend(zoneManager);
+const ComponentCtor2 = Vue.extend(networkManager);
 const ClassName = "Configuration";
 
 const globalType = typeof window === "undefined" ? global : window;
 const spinalSystem = globalType.spinal.spinalSystem;
 
-const PanelTitle1 = "configuration-zone";
-const ButtonLabel1 = "configuration-zone";
-const ButtonIcon1 = "settings";
+const PanelTitle1 = "zone manager";
+const ButtonLabel1 = "Operation Center";
+const ButtonIcon1 = "perm_data_setting";
 // configuration-network
-const PanelTitle2 = "Time-Series";
-const ButtonLabel2 = "Time-Series";
+const PanelTitle2 = "network manager";
+const ButtonLabel2 = "network manager";
 const ButtonIcon2 = "perm_data_setting";
 
 const classExtention = class {
@@ -24,6 +28,8 @@ const classExtention = class {
     this.panel1 = null;
     this.panel2 = null;
     this.relOptions = null;
+    this.show = false;
+    this.show2 = false;
   }
   load() {
     if (this.viewer.toolbar) {
@@ -36,6 +42,11 @@ const classExtention = class {
         this.onToolbarCreatedBinded
       );
     }
+
+    // setInterval(() => {
+    //   EventBus.$emit("testtry", this);
+    // }, 500);
+
     return true;
   }
   onToolbarCreated() {
@@ -52,18 +63,56 @@ const classExtention = class {
   }
   // This function is to create your button on viewer, it used autodesk forge api
   createUI() {
+    let panelManager = new PanelManager(this.viewer, panelButton);
+    globalType.spinal.panelManager = panelManager;
+
     this.panel1 = new PanelClass(this.viewer, PanelTitle1);
-    this.panel1.container.style.height = "calc(80vh)";
+    globalType.spinal.panelManager.registerPanel(
+      this.panel1,
+      "operationCenter"
+    );
+    // globalType.spinal.panelManager.registerPanel(this.panel1, "test");
+    // this.panel1.container.style.height = "calc(80vh)";
+    // this.panel1.container.style.minHeight = "35px";
+    // this.panel1.container.style.height = "0px";
+    // this.panel1.container.style.left = "0px";
+
+    // this.panel1.container.style.top = "0px";
+
+    console.log(this.panel1);
+    // this.panel1.title.onclick = () => {
+    //   if (this.show) {
+    //     this.show = false;
+    //     this.panel1.container.style.minHeight = "35px";
+    //     this.panel1.container.style.height = "0px";
+    //     if (this.panel2.container.style.left < "200px")
+    //       this.panel2.container.style.top = "35px";
+    //   } else {
+    //     this.show = true;
+
+    //     this.panel1.container.style.minHeight = "35px";
+    //     this.panel1.container.style.height = "200px";
+    //     if (this.panel2.container.style.left < "200px")
+    //       this.panel2.container.style.top = "200px";
+    //   }
+
+    //   EventBus.$emit("showPanelContent", this.show);
+    // };
+    // this.panel1.container.style.height = "0 px";
+    // this.panel1.container.style.minHeight = "0 px";
+
     var button1 = new Autodesk.Viewing.UI.Button(ButtonLabel1);
-    button1.onClick = e => {
-      if (!this.panel1.isVisible()) {
-        this.panel1.setVisible(true);
-        if (this.relOptions != null) this.relOptions.button1Active.set(true);
-      } else {
-        this.panel1.setVisible(false);
-        if (this.relOptions != null) this.relOptions.button1Active.set(false);
-      }
-    };
+    globalType.spinal.panelManager.registerButton(button1, "operationCenter");
+
+    // button1.onClick = e => {
+    //   if (!this.panel1.isVisible()) {
+    //     this.panel1.setVisible(true);
+    //     if (this.relOptions != null) this.relOptions.button1Active.set(true);
+    //   } else {
+    //     this.panel1.setVisible(false);
+    //     if (this.relOptions != null) this.relOptions.button1Active.set(false);
+    //   }
+    // };
     button1.container.style.color = "red";
     var icon = button1.container.firstChild;
     icon.className = "adsk-button-icon md-icon md-icon-font md-theme-default";
@@ -71,8 +120,30 @@ const classExtention = class {
     button1.setToolTip(ButtonLabel1);
 
     this.panel2 = new PanelClass(this.viewer, PanelTitle2);
-    this.panel2.container.style.left = "600px";
+
+    globalType.spinal.panelManager.registerPanel(
+      this.panel2,
+      "operationCenter"
+    );
+
+    // this.panel2.container.style.left = "calc(100vw - 68%)";
+    // this.panel2.container.style.left = "0px";
+    // this.panel2.container.style.top = "35px";
+    // this.panel2.title.onclick = () => {
+    //   if (this.show2) {
+    //     this.show2 = false;
+    //     this.panel2.container.style.minHeight = "35px";
+    //     this.panel2.container.style.height = "0px";
+    //   } else {
+    //     this.show2 = true;
+    //     this.panel2.container.style.minHeight = "35px";
+    //     this.panel2.container.style.height = "200px";
+    //   }
+
+    //   EventBus.$emit("show2PanelContent", this.show2);
+    // };
     var button2 = new Autodesk.Viewing.UI.Button(ButtonLabel2);
+
     button2.onClick = e => {
       if (!this.panel2.isVisible()) {
         this.panel2.setVisible(true);
@@ -90,9 +161,9 @@ const classExtention = class {
       this.subToolbar = new Autodesk.Viewing.UI.ControlGroup("spinalcom");
       this.viewer.toolbar.addControl(this.subToolbar);
     }
-    this.subToolbar.addControl(button1);
+    // this.subToolbar.addControl(button1);
     this.subToolbar.addClass("bkcolor");
-    this.subToolbar.addControl(button2);
+    // this.subToolbar.addControl(button2);
     this.initialize();
   }
   initialize() {
@@ -115,7 +186,7 @@ const classExtention = class {
       if (forgefile) {
         if (forgefile.operationCenter) {
           forgefile.operationCenter.load(model => {
-            model.relForestOptions.load(relFO => {
+            model.relForestOptionsZone.load(relFO => {
               relFO.options.load(opt => {
                 this.relOptions = opt;
                 if (typeof this.relOptions.button1Active === "undefined") {
