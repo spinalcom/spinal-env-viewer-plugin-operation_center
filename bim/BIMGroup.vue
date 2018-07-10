@@ -45,7 +45,8 @@ export default {
     return {
       arrayBIMGroup: [],
       self: null,
-      isSelected: true
+      isSelected: true,
+      BIMGroup: null
     };
   },
   props: ["node", "nodeSelected"],
@@ -57,20 +58,21 @@ export default {
     test: function() {},
     getArray: function() {
       this.arrayBIMGroup = [];
-      for (let i = 0; i < this.node.element.BIMGroup.BIMObjects.length; i++) {
-        this.arrayBIMGroup.push(this.node.element.BIMGroup.BIMObjects[i]);
+      if (this.BIMGroup != null) {
+        for (let i = 0; i < this.BIMGroup.BIMObjects.length; i++) {
+          this.arrayBIMGroup.push(this.BIMGroup.BIMObjects[i]);
+        }
       }
     },
     onChange: function(evt) {
       if (evt.added) {
-        this.node.element.BIMGroup.addItems(
-          [evt.added.element],
-          evt.added.newIndex
-        );
+        if (this.BIMGroup != null)
+          this.BIMGroup.addItems([evt.added.element], evt.added.newIndex);
         this.node.updateShowContent(true);
       }
       if (evt.removed) {
-        this.node.element.BIMGroup.removeItemByIndex(evt.removed.oldIndex);
+        if (this.BIMGroup != null)
+          this.BIMGroup.removeItemByIndex(evt.removed.oldIndex);
         this.node.updateShowContent();
       }
       if (evt.moved) {
@@ -81,7 +83,11 @@ export default {
     }
   },
   mounted() {
-    this.node.element.BIMGroup.bind(this.refresh);
+    this.node.element["relZoneContains"].load(BIMGroupLst => {
+      this.BIMGroup = BIMGroupLst[0];
+      this.BIMGroup.bind(this.refresh);
+    });
+    // this.node.element.BIMGroup.bind(this.refresh);
   }
 };
 </script>
@@ -89,9 +95,17 @@ export default {
 
 <style scoped>
 .BIMGroup .md-list-item {
+  padding-left: 9px;
   border-left: 2px rgba(0, 0, 0, 1);
   border-left-style: solid;
 }
+
+/* .BIMGroup > ul > div > li {
+  padding-left: 10px;
+  border-left: 2px rgba(0, 0, 0, 1);
+  border-left-style: solid;
+  background-color: brown;
+} */
 .dragArea {
   min-height: 1px;
 }

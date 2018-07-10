@@ -21,14 +21,14 @@
             <span>{{node.element.name.get()}}</span>
           </div>
 
-          <div v-if="node.element.BIMGroup.active.get()==true"
+          <div v-if=" BIMGroup !=null && BIMGroup.active.get()==true"
                class="md-list-item-text">
-            <span>{{node.element.BIMGroup.currentValue.get()}}</span>
+            <span>{{BIMGroup.currentValue.get()}}</span>
           </div>
 
-          <div v-if="node.element.BIMGroup.active.get()=== true"
+          <div v-if=" BIMGroup !=null &&BIMGroup.active.get()=== true"
                class="md-list-item-text">
-            <span>{{node.element.BIMGroup.name.get()}}</span>
+            <span>{{BIMGroup.name.get()}}</span>
           </div>
 
           <md-button v-if="networkEditingMode && node.element.type.get()==='Equipement'"
@@ -156,7 +156,7 @@
         </md-list-item>
       </md-list>
     </div> -->
-    <bim-group v-if="this.node.showContent.get()"
+    <bim-group v-if="BIMGroup !=null &&node.showContent.get()"
                :node="node"
                :nodeSelected="isSelected"></bim-group>
 
@@ -169,7 +169,7 @@ let globalType = typeof window === "undefined" ? global : window;
 import DialogPrompt from "../assets/utilities/dialogPrompt.vue";
 import zone from "./zone.vue";
 import EventBus from "../assets/utilities/EventBus.vue";
-import BIMGroup from "../bim/BIMGroup.vue";
+import BIMGroupVue from "../bim/BIMGroup.vue";
 export default {
   name: "zone",
   data() {
@@ -179,15 +179,23 @@ export default {
       isSelected: false,
       toggleSimulationIcon: "check_box_outline_blank",
       simulationMode: false,
-      networkEditingMode: false
+      networkEditingMode: false,
+      BIMGroup: null
     };
   },
   components: {
     zone: zone,
-    bimGroup: BIMGroup,
+    bimGroup: BIMGroupVue,
     draggable
   },
   props: ["node", "relZoneAggregatesList", "zoneList"],
+  // watch: {
+  //   BIMGroup: function(newBIMGroup) {
+  //     console.log(newBIMGroup);
+
+  //     this.setActivationIcon();
+  //   }
+  // },
   methods: {
     onUp: function(_index) {
       if (_index > 0) {
@@ -231,7 +239,7 @@ export default {
       );
       this.node.updateShowContent(true);
     },
-    sendContext: function() {
+    sendContext: async function() {
       if (this.node.element.type.get() === "Zone")
         EventBus.$emit("zoneContext", this);
       if (this.node.element.type.get() === "Equipement")
@@ -239,17 +247,30 @@ export default {
       this.isSelected = true;
       // console.log(this.node);
       // this.node.test();
-      let ids = this.node.getItems();
+      let ids = await this.node.getItems();
       globalType.v.select(ids, Autodesk.Viewing.SelectionMode.MIXED);
     },
     refresh: function() {
+      // if (typeof this.node.element["relZoneContains"] !== "undefined")
+      //   this.node.element["relZoneContains"].load(BIMGroupLst => {
+      //     this.BIMGroup = BIMGroupLst[0];
+      //   });
       this.getArray();
       this.hideShowIcon = this.node.showContent.get()
         ? "arrow_drop_down"
         : "arrow_drop_up";
-      this.toggleSimulationIcon = this.node.element.BIMGroup.active.get()
-        ? "check_box"
-        : "check_box_outline_blank";
+      if (this.BIMGroup != null) {
+        this.toggleSimulationIcon = this.BIMGroup.active.get()
+          ? "check_box"
+          : "check_box_outline_blank";
+      }
+    },
+    refreshBIMGroup: function() {
+      if (this.BIMGroup != null) {
+        this.toggleSimulationIcon = this.BIMGroup.active.get()
+          ? "check_box"
+          : "check_box_outline_blank";
+      }
     },
     onChange: function(evt) {
       // if (evt.added) {
@@ -281,28 +302,29 @@ export default {
         // this.hideShowIcon = "keyboard_arrow_right";
       } else if (
         this.node.children.length > 0 ||
-        (this.node.element.BIMGroup &&
-          this.node.element.BIMGroup.BIMObjects.length > 0)
+        (this.BIMGroup != null && this.BIMGroup.BIMObjects.length > 0)
       ) {
         this.node.updateShowContent(true);
         // this.hideShowIcon = "keyboard_arrow_down";
       }
     },
     toggleActivation: function() {
-      if (this.node.element.BIMGroup.active.get()) {
-        // this.node.element.BIMGroup.active.set(false);
-        this.node.setAllDatasActive(false);
-        this.toggleSimulationIcon = "check_box_outline_blank";
-      } else {
-        this.node.setAllDatasActive(true);
-        // this.node.BIMGroup.element.active.set(true);
-        this.toggleSimulationIcon = "check_box";
-      }
+      if (this.BIMGroup != null)
+        if (this.BIMGroup.active.get()) {
+          // this.BIMGroup.active.set(false);
+          this.node.setAllDatasActive(false);
+          this.toggleSimulationIcon = "check_box_outline_blank";
+        } else {
+          this.node.setAllDatasActive(true);
+          // this.node.BIMGroup.element.active.set(true);
+          this.toggleSimulationIcon = "check_box";
+        }
     },
     setActivationIcon: function() {
-      this.toggleSimulationIcon = this.node.element.BIMGroup.active.get()
-        ? "check_box"
-        : "check_box_outline_blank";
+      if (this.BIMGroup != null)
+        this.toggleSimulationIcon = this.BIMGroup.active.get()
+          ? "check_box"
+          : "check_box_outline_blank";
     },
     deselect: function() {
       this.isSelected = false;
@@ -342,6 +364,12 @@ export default {
     }, 20);
 
     this.node.bind(this.refresh);
+
+    if (typeof this.node.element["relZoneContains"] !== "undefined")
+      this.node.element["relZoneContains"].load(BIMGroupLst => {
+        this.BIMGroup = BIMGroupLst[0];
+        this.BIMGroup.bind(this.refreshBIMGroup);
+      });
     this.getEvents();
   }
   // berforeDestroy() {

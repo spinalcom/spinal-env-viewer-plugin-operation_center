@@ -157,8 +157,10 @@ export default {
         this.defaultMeasurement = newDevice.defaultMeasurement.get();
         console.log(this.defaultMeasurement);
 
-        newDevice.relatedEquipement.load(relatedEquipement => {
-          this.relatedEquipement = relatedEquipement;
+        newDevice.relEquipementDevice.load(relEquipementDevice => {
+          relEquipementDevice.equipement.load(relatedEquipement => {
+            this.relatedEquipement = relatedEquipement;
+          });
         });
         newDevice.defaultMeasurement.lst.bind(this.updateArray);
         // newDevice.defaultMeasurement.bind(this.updateDefaultMeseaurement);
@@ -166,7 +168,18 @@ export default {
     },
     relatedEquipement: function(newRelatedEquipement, oldRelatedEquipement) {
       if (newRelatedEquipement != null) {
-        this.device.relatedEquipement.set(this.relatedEquipement);
+        this.device.relEquipementDevice.load(relEquipementDevice => {
+          relEquipementDevice.equipement.set(this.relatedEquipement);
+          this.relatedEquipement.mod_attr(
+            "relEquipementDevice",
+            this.device.relEquipementDevice
+          );
+        });
+
+        this.device.relDeviceEquipement.load(relDeviceEquipement => {
+          relDeviceEquipement.equipement.set(this.relatedEquipement);
+        });
+
         this.relatedEquipementName = newRelatedEquipement.name.get();
       } else this.relatedEquipementName = "select an Equipement";
     }

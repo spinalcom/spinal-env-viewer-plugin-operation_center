@@ -26,7 +26,8 @@ export default {
       chart1: {},
       self: null,
       // refreshInterval: null
-      image: image
+      image: image,
+      BIMGroup: null
     };
   },
   components: {},
@@ -108,34 +109,17 @@ export default {
       });
     },
     refresh: function() {
-      // console.log("test");
-
-      this.chart1.data.datasets[0].data = this.self.element.BIMGroup.timeSeries.get();
-      this.chart1.update();
-      // let intervalle = 2;
-      // this.refreshInterval = setInterval(() => {
-      //   if (this.self !== null) {
-      //     // let newValue = this.generateRandomValue();
-      //     // this.chart1.data.datasets[0].data[2] = newValue;
-      //     // this.removeData();
-      //     // this.addData("", this.self.element.BIMGroup.timeSeries[29].get());
-      //     this.chart1.data.datasets[0].data = this.self.element.BIMGroup.timeSeries.get();
-      //     this.chart1.update();
-      //   }
-      // }, intervalle * 1000);
+      if (this.BIMGroup != null) {
+        this.chart1.data.datasets[0].data = this.BIMGroup.timeSeries.get();
+        this.chart1.update();
+      }
     },
     getEvents: function() {
       EventBus.$on("zoneContext", _self => {
-        if (typeof _self.node == "undefined") {
-          this.self = _self;
-        } else {
-          this.self = _self.node;
-        }
-        this.chart1.data.datasets[0].data = this.self.element.BIMGroup.timeSeries.get();
-        this.chart1.data.datasets[0].label = this.self.element.name.get();
-        this.chart1.update();
-        this.self.element.BIMGroup.bind(this.refresh);
-        // if (this.refreshInterval === null) this.refresh();
+        this.getZone(_self);
+      });
+      EventBus.$on("equipementContext", _self => {
+        this.getZone(_self);
       });
       EventBus.$on("removeZone", _self => {
         // console.log(_self);
@@ -150,8 +134,26 @@ export default {
         // }
       });
     },
+    getZone: function(_self) {
+      if (typeof _self.node == "undefined") {
+        this.self = _self;
+      } else {
+        this.self = _self.node;
+      }
+      if (this.BIMGroup != null) this.BIMGroup.unbind(this.refresh);
+      if (typeof this.self.element["relZoneContains"] !== "undefined")
+        this.self.element["relZoneContains"].load(BIMGroupLst => {
+          this.BIMGroup = BIMGroupLst[0];
+          this.chart1.data.datasets[0].data = this.BIMGroup.timeSeries.get();
+          this.BIMGroup.bind(this.refresh);
+        });
+      this.chart1.data.datasets[0].label = this.self.element.name.get();
+      this.chart1.update();
+
+      // if (this.refreshInterval === null) this.refresh();
+    },
     linkToDB: function() {
-      if (this.self != null) this.self.element.BIMGroup.bind(this.refresh);
+      if (this.BIMGroup != null) this.BIMGroup.bind(this.refresh);
     }
   },
 

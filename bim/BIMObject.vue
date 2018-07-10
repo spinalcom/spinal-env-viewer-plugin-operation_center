@@ -60,9 +60,11 @@ export default {
       this.isSelected = false;
     },
     onDelete: function() {
-      this.node.element.BIMGroup.removeItems([this.item]);
-      this.viewer.clearThemingColors();
-      this.node.updateShowContent();
+      this.node.element["relZoneContains"].load(BIMGroupLst => {
+        BIMGroupLst[0].removeItems([this.item]);
+        this.viewer.clearThemingColors();
+        this.node.updateShowContent();
+      });
     }
   },
   mounted() {
@@ -74,12 +76,15 @@ export default {
 
 <style>
 .BIMObject {
-  width: calc(100% - 5px);
+  width: calc(100%);
   max-width: 100%;
   display: inline-block;
   vertical-align: top;
   overflow: auto;
   border: 1px solid rgba(0, 0, 0, 0.12);
+  padding-left: 9px;
+  border-left: 2px rgba(0, 0, 0, 1);
+  border-left-style: solid;
 }
 
 .BIMObjectSelect > ul > li > div > div {

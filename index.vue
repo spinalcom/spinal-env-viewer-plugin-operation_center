@@ -1,11 +1,11 @@
 <script>
 import Vue from "vue";
-import { PanelManager } from "spinal-models-operation_center";
+// import { PanelManager } from "spinal-models-operation_center";
 
 import zoneManager from "./physical_zones/zoneManager.vue";
 import networkManager from "./network/networkManager.vue";
 import EventBus from "./assets/utilities/EventBus.vue";
-import panelButton from "./panelButton.vue";
+// import panelButton from "./panelButton.vue";
 const ComponentCtor1 = Vue.extend(zoneManager);
 const ComponentCtor2 = Vue.extend(networkManager);
 const ClassName = "Configuration";
@@ -63,8 +63,8 @@ const classExtention = class {
   }
   // This function is to create your button on viewer, it used autodesk forge api
   createUI() {
-    let panelManager = new PanelManager(this.viewer, panelButton);
-    globalType.spinal.panelManager = panelManager;
+    // let panelManager = new PanelManager(this.viewer, panelButton);
+    // globalType.spinal.panelManager = panelManager;
 
     this.panel1 = new PanelClass(this.viewer, PanelTitle1);
     globalType.spinal.panelManager.registerPanel(
@@ -79,7 +79,6 @@ const classExtention = class {
 
     // this.panel1.container.style.top = "0px";
 
-    console.log(this.panel1);
     // this.panel1.title.onclick = () => {
     //   if (this.show) {
     //     this.show = false;
@@ -218,3 +217,11 @@ export default new class {
   background-color: rgba(17, 48, 223, 0.644);
 }
 </style>
+import PanelManager from "./PanelManager"
+import panel from "./panel.vue";
+
+const globalType = typeof window === "undefined" ? global : window;
+let viewer = globalType.v;
+let panelManager = new PanelManager(viewer, panel);
+globalType.spinal.panelManager = panelManager;
+

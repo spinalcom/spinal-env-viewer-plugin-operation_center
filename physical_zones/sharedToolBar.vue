@@ -63,7 +63,8 @@ export default {
       prompt: false,
       preSelected: null,
       disableSelection: false,
-      icon: "visibility_off"
+      icon: "visibility_off",
+      BIMGroup: null
     };
   },
   components: {
@@ -73,10 +74,11 @@ export default {
     onRemove: function() {
       this.remove();
     },
-    remove: function() {
+    remove: async function() {
       EventBus.$emit("removeZone", this.self);
       if (this.self) {
-        viewer.restoreColorMaterial(this.self.getItems());
+        let items = await this.self.getItems();
+        viewer.restoreColorMaterial(items);
         if (this.self.isRoot()) {
           this.removeRoot();
           this.self = null;
@@ -109,9 +111,13 @@ export default {
           this.self = _self.node;
         }
         this.name = this.getName();
-        this.icon = this.self.element.BIMGroup.display.get()
-          ? "visibility"
-          : "visibility_off";
+        if (typeof this.self.element["relZoneContains"] != "undefined")
+          this.self.element["relZoneContains"].load(BIMGroupLst => {
+            this.BIMGroup = BIMGroupLst[0];
+            this.icon = this.BIMGroup.display.get()
+              ? "visibility"
+              : "visibility_off";
+          });
       });
       EventBus.$on("equipementContext", _self => {
         if (typeof _self.node == "undefined") {
@@ -122,9 +128,13 @@ export default {
           this.self = _self.node;
         }
         this.name = this.getName();
-        this.icon = this.self.element.BIMGroup.display.get()
-          ? "visibility"
-          : "visibility_off";
+        if (typeof this.self.element["relZoneContains"] != "undefined")
+          this.self.element["relZoneContains"].load(BIMGroupLst => {
+            this.BIMGroup = BIMGroupLst[0];
+            this.icon = this.BIMGroup.display.get()
+              ? "visibility"
+              : "visibility_off";
+          });
       });
     },
     getName: function() {
@@ -135,21 +145,23 @@ export default {
     },
     getSelected: function() {
       //TODO check if a leaf of the autodesk tree
+
       let selected = viewer.getSelection();
       for (let i = 0; i < selected.length; i++) {
         const itemId = selected[i];
         if (this.self != null) {
-          this.self.element.BIMGroup.addItem(itemId);
+          this.self.addBIMObject(itemId);
           this.self.updateShowContent(true);
         }
       }
     },
-    displayColor() {
-      if (this.self) {
-        if (this.self.element.BIMGroup.display.get()) {
+    displayColor: async function() {
+      if (this.self != null) {
+        if (this.BIMGroup != null && this.BIMGroup.display.get()) {
           this.self.setAllDisplays(false); //the element included
           this.icon = "visibility_off";
-          viewer.restoreColorMaterial(this.self.getItems());
+          let items = await this.self.getItems();
+          viewer.restoreColorMaterial(items);
         } else {
           this.self.setAllDisplays(true);
           this.icon = "visibility";
