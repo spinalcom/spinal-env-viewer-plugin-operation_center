@@ -21,8 +21,8 @@
 </template>
 
 <script>
-import EventBus from "../assets/utilities/EventBus.vue";
-var globalType;
+const globalType = typeof window === "undefined" ? global : window;
+var EventBus;
 var spinalSystem;
 export default {
   name: "sharedToolBarDevice",
@@ -151,8 +151,8 @@ export default {
     }
   },
   mounted() {
-    globalType = typeof window === "undefined" ? global : window;
     spinalSystem = globalType.spinal.spinalSystem;
+    EventBus = globalType.spinal.eventBus;
     this.getEvents();
   }
 };

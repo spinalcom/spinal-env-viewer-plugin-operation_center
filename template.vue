@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import EventBus from "../assets/utilities/EventBus.vue";
+var EventBus;
 export default {
   name: "supervisor",
   data() {
@@ -16,6 +16,7 @@ export default {
     getEvents: function() {}
   },
   mounted() {
+    EventBus = globalType.spinal.eventBus;
     this.getEvents();
   }
 };

@@ -12,8 +12,8 @@
 var globalType = typeof window === "undefined" ? global : window;
 var spinalSystem;
 var viewer;
+var EventBus;
 import Vue from "vue";
-import EventBus from "../assets/utilities/EventBus.vue";
 // import deviceForest from "../network/deviceForest.vue";
 import networkConfigManager from "../networkConfig/networkConfigManager.vue";
 // const devicesPanelComponentCtor = Vue.extend(deviceForest);
@@ -127,6 +127,8 @@ export default {
   mounted() {
     spinalSystem = globalType.spinal.spinalSystem;
     viewer = globalType.v;
+    EventBus = globalType.spinal.eventBus;
+
     // this.linkToDB();
     // this.devicesPanelInit();
     this.networkConfigManagerPanelInit();

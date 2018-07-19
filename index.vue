@@ -4,7 +4,6 @@ import Vue from "vue";
 
 import zoneManager from "./physical_zones/zoneManager.vue";
 import networkManager from "./network/networkManager.vue";
-import EventBus from "./assets/utilities/EventBus.vue";
 // import panelButton from "./panelButton.vue";
 const ComponentCtor1 = Vue.extend(zoneManager);
 const ComponentCtor2 = Vue.extend(networkManager);
@@ -12,6 +11,7 @@ const ClassName = "Configuration";
 
 const globalType = typeof window === "undefined" ? global : window;
 const spinalSystem = globalType.spinal.spinalSystem;
+const EventBus = globalType.spinal.eventBus;
 
 const PanelTitle1 = "zone manager";
 const ButtonLabel1 = "Operation Center";

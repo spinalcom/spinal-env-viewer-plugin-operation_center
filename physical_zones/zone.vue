@@ -168,7 +168,8 @@ import draggable from "vuedraggable";
 let globalType = typeof window === "undefined" ? global : window;
 import DialogPrompt from "../assets/utilities/dialogPrompt.vue";
 import zone from "./zone.vue";
-import EventBus from "../assets/utilities/EventBus.vue";
+var EventBus;
+
 import BIMGroupVue from "../bim/BIMGroup.vue";
 export default {
   name: "zone",
@@ -359,6 +360,7 @@ export default {
     // }
   },
   mounted() {
+    EventBus = globalType.spinal.eventBus;
     setTimeout(() => {
       this.verifySimulationMode();
     }, 20);

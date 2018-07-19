@@ -50,8 +50,8 @@
 
 <script>
 import DialogPrompt from "../assets/utilities/dialogPrompt.vue";
-import EventBus from "../assets/utilities/EventBus.vue";
-var globalType;
+const globalType = typeof window === "undefined" ? global : window;
+var EventBus;
 var spinalSystem;
 var viewer;
 export default {
@@ -170,9 +170,9 @@ export default {
     }
   },
   mounted() {
-    globalType = typeof window === "undefined" ? global : window;
     spinalSystem = globalType.spinal.spinalSystem;
     viewer = globalType.v;
+    EventBus = globalType.spinal.eventBus;
     this.getEvents();
   }
 };

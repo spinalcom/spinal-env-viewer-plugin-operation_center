@@ -104,7 +104,7 @@
 <script>
 let globalType = typeof window === "undefined" ? global : window;
 var spinalSystem;
-import EventBus from "../assets/utilities/EventBus.vue";
+var EventBus;
 import VueIp from "vue-ip";
 import draggable from "vuedraggable";
 import image from "./download.png";
@@ -238,8 +238,9 @@ export default {
     }
   },
   mounted() {
-    this.getEvents({});
     spinalSystem = globalType.spinal.spinalSystem;
+    EventBus = globalType.spinal.eventBus;
+    this.getEvents({});
   }
 };
 </script>

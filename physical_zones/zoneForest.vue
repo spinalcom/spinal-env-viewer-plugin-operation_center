@@ -16,7 +16,7 @@ var spinalSystem;
 var viewer;
 
 import forest from "../assets/utilities/forest.vue";
-import EventBus from "../assets/utilities/EventBus.vue";
+var EventBus;
 
 export default {
   name: "zoneForest",
@@ -93,6 +93,7 @@ export default {
     globalType = typeof window === "undefined" ? global : window;
     spinalSystem = globalType.spinal.spinalSystem;
     viewer = globalType.v;
+    EventBus = globalType.spinal.eventBus;
     this.getEvents();
   }
 };

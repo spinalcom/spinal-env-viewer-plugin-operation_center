@@ -33,8 +33,8 @@
 const globalType = typeof window === "undefined" ? global : window;
 var spinalSystem;
 var viewer;
+var EventBus;
 import linker from "../network/linker.vue";
-import EventBus from "../assets/utilities/EventBus.vue";
 import networkList from "./networkList.vue";
 import sharedToolBarDevice from "./sharedToolBarDevice.vue";
 export default {
@@ -81,6 +81,7 @@ export default {
   mounted() {
     spinalSystem = globalType.spinal.spinalSystem;
     viewer = globalType.v;
+    EventBus = globalType.spinal.eventBus;
     this.getEvents();
     this.linkToDB();
   }

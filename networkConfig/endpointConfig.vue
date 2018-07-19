@@ -28,7 +28,8 @@
 </template>
 
 <script>
-import EventBus from "../assets/utilities/EventBus.vue";
+const globalType = typeof window === "undefined" ? global : window;
+var EventBus;
 var debounce = require("lodash.debounce");
 
 export default {
@@ -70,6 +71,7 @@ export default {
     this.debounceUpdate = debounce(this.updateName, 500);
   },
   mounted() {
+    EventBus = globalType.spinal.eventBus;
     this.getEvents();
   }
 };

@@ -16,9 +16,8 @@
 var globalType = typeof window === "undefined" ? global : window;
 var spinalSystem;
 var viewer;
+var EventBus;
 import forest from "../assets/utilities/forest.vue";
-import EventBus from "../assets/utilities/EventBus.vue";
-
 export default {
   name: "deviceForest",
   data() {
@@ -48,6 +47,7 @@ export default {
   mounted() {
     spinalSystem = globalType.spinal.spinalSystem;
     viewer = globalType.v;
+    EventBus = globalType.spinal.eventBus;
     this.linkToDB();
     this.getEvents();
   }

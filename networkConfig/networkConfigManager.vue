@@ -14,7 +14,8 @@
 </template>
 
 <script>
-import EventBus from "../assets/utilities/EventBus.vue";
+let globalType = typeof window === "undefined" ? global : window;
+var EventBus;
 import deviceConfig from "./deviceConfig.vue";
 import endpointGroupConfig from "./endpointGroupConfig.vue";
 import endpointConfig from "./endpointConfig.vue";
@@ -70,6 +71,7 @@ export default {
       }
     },
     getEvents: function() {
+      EventBus = globalType.spinal.eventBus;
       EventBus.$on("networkConfigManagerPanelVisibility", visibility => {
         this.editingMode = visibility;
       });

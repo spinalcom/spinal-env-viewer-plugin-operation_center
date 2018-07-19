@@ -34,7 +34,7 @@
 <script>
 var globalType = typeof window === "undefined" ? global : window;
 var spinalSystem;
-import EventBus from "../assets/utilities/EventBus.vue";
+var EventBus;
 export default {
   name: "BIMObject",
   data() {
@@ -69,6 +69,7 @@ export default {
   },
   mounted() {
     spinalSystem = globalType.spinal.spinalSystem;
+    EventBus = globalType.spinal.eventBus;
   }
 };
 </script>

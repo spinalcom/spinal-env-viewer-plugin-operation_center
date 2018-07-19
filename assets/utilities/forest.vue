@@ -31,10 +31,11 @@
 </template>
 
 <script>
+const globalType = typeof window === "undefined" ? global : window;
+var EventBus;
 import draggable from "vuedraggable";
 import zone from "../../physical_zones/zone.vue";
 import device from "../../network/device.vue";
-// import EventBus from "../assets/utilities/EventBus.vue";
 export default {
   name: "forest",
   data() {
@@ -82,6 +83,7 @@ export default {
     }
   },
   mounted() {
+    EventBus = globalType.spinal.eventBus;
     this.forest.list.bind(this.refresh);
     this.getEvents();
   }

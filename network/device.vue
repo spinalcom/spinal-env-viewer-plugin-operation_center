@@ -101,11 +101,10 @@
 <script>
 import draggable from "vuedraggable";
 let globalType = typeof window === "undefined" ? global : window;
+var EventBus;
 import device from "./device.vue";
 import draggableList from "../assets/utilities/draggableList.vue";
 // import endpointGroup from "./endpointGroup.vue";
-
-import EventBus from "../assets/utilities/EventBus.vue";
 export default {
   name: "device",
   data() {
@@ -192,6 +191,7 @@ export default {
     getEvents: function() {}
   },
   mounted() {
+    EventBus = globalType.spinal.eventBus;
     this.deviceNode.bind(this.refresh);
     this.getEvents();
   }

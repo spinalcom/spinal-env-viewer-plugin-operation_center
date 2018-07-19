@@ -14,7 +14,7 @@
 var globalType = typeof window === "undefined" ? global : window;
 var spinalSystem;
 var viewer;
-import EventBus from "../assets/utilities/EventBus.vue";
+var EventBus;
 import network from "./network.vue";
 export default {
   name: "networkList",
@@ -66,6 +66,7 @@ export default {
   mounted() {
     spinalSystem = globalType.spinal.spinalSystem;
     viewer = globalType.v;
+    EventBus = globalType.spinal.eventBus;
     this.linkToDB();
     this.getEvents();
   }

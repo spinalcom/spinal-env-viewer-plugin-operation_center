@@ -11,7 +11,8 @@
 </template>
 
 <script>
-import EventBus from "./EventBus.vue";
+const globalType = typeof window === "undefined" ? global : window;
+var EventBus;
 export default {
   name: "DialogPrompt",
   data() {
@@ -30,6 +31,9 @@ export default {
       this.value = "";
       EventBus.$emit("disablePrompt");
     }
+  },
+  mounted() {
+    EventBus = globalType.spinal.eventBus;
   }
 };
 </script>

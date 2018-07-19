@@ -50,7 +50,8 @@
 </template>
 
 <script>
-import EventBus from "../assets/utilities/EventBus.vue";
+const globalType = typeof window === "undefined" ? global : window;
+var EventBus;
 import deviceForest from "./deviceForest.vue";
 export default {
   name: "network",
@@ -108,6 +109,7 @@ export default {
     }
   },
   mounted() {
+    EventBus = globalType.spinal.eventBus;
     this.getEvents();
     let interval = setInterval(() => {
       if (typeof this.networkPtr !== "undefined") {

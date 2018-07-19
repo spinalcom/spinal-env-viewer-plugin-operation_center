@@ -15,7 +15,7 @@
 <script>
 const globalType = typeof window === "undefined" ? global : window;
 import image from "../images/spe.png";
-import EventBus from "./EventBus.vue";
+var EventBus;
 import Chart from "chart.js";
 export default {
   name: "chart",
@@ -158,6 +158,7 @@ export default {
   },
 
   mounted() {
+    EventBus = globalType.spinal.eventBus;
     this.linkToDB(), this.getEvents(), this.initialize();
   }
 };

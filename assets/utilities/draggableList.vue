@@ -26,8 +26,10 @@
 </template>
 
 <script>
+const globalType = typeof window === "undefined" ? global : window;
+var EventBus;
+
 import draggable from "vuedraggable";
-import EventBus from "./EventBus.vue";
 import endpoint from "../../network/endpoint.vue";
 import endpointGroup from "../../network/endpointGroup.vue";
 
@@ -54,6 +56,7 @@ export default {
     }
   },
   mounted() {
+    EventBus = globalType.spinal.eventBus;
     this.getEvents();
     this.list.bind(this.onModelChange);
   }

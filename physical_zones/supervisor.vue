@@ -13,7 +13,7 @@ const spinalSystem = globalType.spinal.spinalSystem;
 var viewer;
 
 import Vue from "vue";
-import EventBus from "../assets/utilities/EventBus.vue";
+var EventBus;
 import chart from "../assets/utilities/chart.vue";
 
 const timeSeriesPanelComponentCtor = Vue.extend(chart);
@@ -83,6 +83,7 @@ export default {
   },
   mounted() {
     viewer = globalType.v;
+    EventBus = globalType.spinal.eventBus;
     this.timeSeriesPanelInit();
     setTimeout(() => {
       if (
@@ -95,8 +96,8 @@ export default {
   computed: {
     setIcon: function() {
       if (
-        typeof this.relOptions !== "undefined" &&
         this.relOptions != null &&
+        typeof this.relOptions !== "undefined" &&
         typeof this.relOptions.simulationMode !== "undefined"
       ) {
         this.icon = this.relOptions.simulationMode.get()

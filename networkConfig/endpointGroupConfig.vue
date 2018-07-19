@@ -31,8 +31,8 @@
 </template>
 
 <script>
-import EventBus from "../assets/utilities/EventBus.vue";
-
+let globalType = typeof window === "undefined" ? global : window;
+var EventBus;
 export default {
   name: "endpointGroupConfig",
   data() {
@@ -59,6 +59,7 @@ export default {
     getEvents: function() {}
   },
   mounted() {
+    EventBus = globalType.spinal.eventBus;
     this.getEvents();
   }
 };

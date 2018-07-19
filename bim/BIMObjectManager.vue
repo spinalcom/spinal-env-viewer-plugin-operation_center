@@ -5,7 +5,8 @@
 </template>
 
 <script>
-import EventBus from "../assets/utilities/EventBus.vue";
+const globalType = typeof window === "undefined" ? global : window;
+var EventBus;
 export default {
   name: "BIMObjectManager",
   data() {
@@ -23,6 +24,7 @@ export default {
     }
   },
   mounted() {
+    EventBus = globalType.spinal.eventBus;
     this.getEvents();
   }
 };
