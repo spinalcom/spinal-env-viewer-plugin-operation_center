@@ -32,9 +32,7 @@
 
       spinalModelDictionary.init().then(
         m => {
-          console.log("spinal model dictionary");
           if (m) {
-            console.log(m);
             if (m.endpointPlugin) {
               m.endpointPlugin.load(mod => {
                 $scope.listOfEndpoints = mod;
@@ -89,14 +87,14 @@
         $mdDialog
           .show(
             $mdDialog
-              .prompt()
-              .title("value")
-              .placeholder("Please enter the Name")
-              .ariaLabel("Add Theme")
-              .clickOutsideToClose(true)
-              .required(true)
-              .ok("Confirm")
-              .cancel("Cancel")
+            .prompt()
+            .title("value")
+            .placeholder("Please enter the Name")
+            .ariaLabel("Add Theme")
+            .clickOutsideToClose(true)
+            .required(true)
+            .ok("Confirm")
+            .cancel("Cancel")
           )
           .then(
             function(result) {
@@ -129,14 +127,14 @@
         $mdDialog
           .show(
             $mdDialog
-              .prompt()
-              .title("add Endpoint")
-              .placeholder("Please enter the Name")
-              .ariaLabel("Add Theme")
-              .clickOutsideToClose(true)
-              .required(true)
-              .ok("Confirm")
-              .cancel("Cancel")
+            .prompt()
+            .title("add Endpoint")
+            .placeholder("Please enter the Name")
+            .ariaLabel("Add Theme")
+            .clickOutsideToClose(true)
+            .required(true)
+            .ok("Confirm")
+            .cancel("Cancel")
           )
           .then(
             function(result) {
@@ -200,9 +198,9 @@
       };
 
       var toggleDisplay = _endpoint => {
-        _endpoint.display.get()
-          ? _endpoint.display.set(false)
-          : _endpoint.display.set(true);
+        _endpoint.display.get() ?
+          _endpoint.display.set(false) :
+          _endpoint.display.set(true);
       };
 
       var setDisplayAll = value => {
@@ -222,7 +220,8 @@
           var B = hexToB(color) / 255;
           var color2 = new THREE.Vector4(R, G, B, 1);
           for (let index = 0; index < endpoint.items.length; index++) {
-            $scope.viewer.setThemingColor(endpoint.items[index].get(), color2);
+            $scope.viewer.setThemingColor(endpoint.items[index].get(),
+              color2);
           }
         } else
           $scope.viewer.setColorMaterial(
@@ -235,7 +234,8 @@
       var unsetColors = (_removedItems, endpointIndex) => {
         if ($scope.coloringType === 1) {
           $scope.viewer.clearThemingColors();
-        } else $scope.viewer.restoreColorMaterial(_removedItems, endpointIndex);
+        } else $scope.viewer.restoreColorMaterial(_removedItems,
+          endpointIndex);
       };
 
       var unsetAllColors = () => {

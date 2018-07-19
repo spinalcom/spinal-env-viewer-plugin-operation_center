@@ -103,7 +103,7 @@ export default {
     },
     onAddDevice: function(_protocole) {
       if (this.deviceForest != null) {
-        this.deviceForest.addTree(_protocole);
+        this.deviceForest.addDevice(_protocole);
       }
       this.show = true;
     }

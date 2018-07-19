@@ -39,8 +39,6 @@ export default {
   components: {},
   methods: {
     onRemove: function() {
-      console.log(this.self);
-
       if (this.self.constructor.name === "DeviceNode") this.removeDevice();
       else if (this.self.constructor.name === "EndpointGroup")
         this.removeEndpointGroup();

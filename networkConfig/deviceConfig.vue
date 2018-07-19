@@ -155,7 +155,6 @@ export default {
 
         this.deviceType = newDevice.deviceType.get();
         this.defaultMeasurement = newDevice.defaultMeasurement.get();
-        console.log(this.defaultMeasurement);
 
         newDevice.relEquipementDevice.load(relEquipementDevice => {
           relEquipementDevice.equipement.load(relatedEquipement => {
@@ -201,8 +200,6 @@ export default {
     },
     getEvents: function() {},
     updateArray: function() {
-      console.log("test");
-
       this.defaultMeasurementChoices = this.device.defaultMeasurement.lst.get();
     },
     // updateDefaultMeseaurement: function() {
