@@ -87,6 +87,7 @@ export default {
     this.timeSeriesPanelInit();
     setTimeout(() => {
       if (
+         this.relOptions != null &&
         typeof this.relOptions !== "undefined" &&
         typeof this.relOptions.button1Active !== "undefined"
       )
